@@ -1,5 +1,3 @@
-#### JS OO ####
-
 1) Zugriff auf super-Methoden
 - via Referenz auf prototype-Objekt (proto)
 
@@ -10,29 +8,18 @@
 - für Event Listener auf DOM Elementen, innerhalb derer this verwendet wird
 - generell: für alle Callback-Funktionen
 
-4) bind() must only be used within lifecycle methods
-- if subtypes are used, it cannot be used successfully within the constructor of a supertype - see showMenu()/hideMenu() in mwf.SidemenuViewController
-- ???
+4) attention: lifecycle functions do not use camel case, but complete lower case
 
-5) attention: lifecycle functions do not use camel case, but complete lower case
+5) do not forget to always call callbacks if they are passed!
 
-6) callback functions should not require call using call(this,...) as here, this should be bound already
+6) JSON.stringify must not be called on objects that presumable are or contain entities - if entities are passed, they might expose cyclic values, and the error message on submit might not be visible!
+=> use mwf.stringify instead!
 
-7) do not forget to always call callbacks if they are passed!
+7) ractive templates should be instantiated with a container (e.g. args), not with the model object itself as otherwise update might not work correctly (see Readview for Note und MediaItem)
 
-8) JSON.stringify must not be called on objects that presumable are or contain entities - if entities are passed, they might expose cyclic values, and the error message on submit might not be visible!
+8) embedded view controllers with mwf-initialise-onload should not use templates (as they are currently initialised before templates are read out...)
 
-9) in ractive templates, existence / nonexistence (for update/create mode) must be checked calling created() on item and passing the id ("this" does not work inside of this calls...?)
-
-10) ractive templates should be instantiated with a container (e.g. args), not with the model object itself as otherwise update might not work correctly (see Readview for Note und MediaItem)
-
-
-####
-
-embedded view controllers with mwf-initialise-onload should not use templates (as they are currently initialised before templates are read out...)
-
-####
-OO:
+9) OO:
 - managed attributes can be declared in supertypes
 - instantiateManagedAttributes() must be called by bottom-most types, but can be kept in supertypes (does not seem to do harm...)
 - for polymorphism, type declaration of managed attribute is not enough... type needs to be set on pojo (as in json for java/jaxrs)
