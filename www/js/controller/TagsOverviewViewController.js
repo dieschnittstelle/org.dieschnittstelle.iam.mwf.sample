@@ -65,7 +65,7 @@ define(["mwf",  "mwfUtils", "entities"], function (mwf,  mwfUtils, entities) {
 
                 // if we use bidirectional data binding, we will always receice an item whose attributes will be bound to the values input by the user
                 // if a new item shall be created, it will not have been assigned an id yet
-                if (item._id > -1) {
+                if (item.created) {
                     console.log("will update item: " + mwf.stringify(item));
                     item.update(function() {
                         console.log("submitTag(): update finished.");
