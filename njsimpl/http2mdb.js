@@ -54,7 +54,7 @@ function MDBRequest(uri) {
 module.exports = {
 
     /* this method dispatches request depending on the request method, comparable to the servlet api */
-    processRequest : function processRequest(req, res) {
+    processRequest : function processRequest(req, res, apiref) {
 
         console.log("processRequest(): req: " + req);
         console.log("processRequest(): req.method: " + req.method);
@@ -63,7 +63,7 @@ module.exports = {
         console.log("processRequest(): req header host: " + req.headers["host"]);
 
         // we truncate the url
-        var uri = utils.substringAfter(req.url, "/http2mdb/");
+        var uri = utils.substringAfter(req.url, "/" + apiref + "/");
 
         // we assume the rest of the url specifies the collection and possibly object to be accessed and wrap this information in a special type of object
         var mdbrequest = new MDBRequest(uri);
@@ -116,7 +116,7 @@ function readObject(collection, objectid, req, res) {
             console.log("Error accessing collection! " + err ? err : "");
             respondError(res);
         } else if (elements.length == 0) {
-            console.error("the element with id " + objectid + " could be found inside of the collection.");
+            console.error("the element with id " + objectid + " could not be found inside of the collection.");
             respondError(res, 404);
         } else {
             console.log("readObject(): found " + elements.length + " elements.");

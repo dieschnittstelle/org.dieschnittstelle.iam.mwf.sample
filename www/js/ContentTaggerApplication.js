@@ -1,29 +1,31 @@
 /**
  * Created by master on 17.02.16.
  */
-define(["mwf","mwfUtils","EntityManager","entities","entitiesTest","GenericCRUDImplLocal","GenericCRUDImplRemote"],function(mwf,mwfUtils,EntityManager,entities,entitiesTest,GenericCRUDImplLocal,GenericCRUDImplRemote){
+define(["mwf","mwfUtils","EntityManager","entities","GenericCRUDImplLocal","GenericCRUDImplRemote"],function(mwf,mwfUtils,EntityManager,entities,GenericCRUDImplLocal,GenericCRUDImplRemote){
 
-    function ContentTaggerApplication() {
+    class ContentTaggerApplication extends mwf.Application {
 
-        var proto = ContentTaggerApplication.prototype;
+        constructor() {
+            super();
 
-        // the button for toggling the crudscope
-        var toggleCrudscopeButtons;
+            // the button for toggling the crudscope
+            this.toggleCrudscopeButtons = [];
+            this.initialCRUDScope = this.CRUDOPS.LOCAL;
+        }
 
-        var initialCRUDScope = this.CRUDOPS.LOCAL;
 
-        this.oncreate = function(callback) {
+        oncreate(callback) {
             console.log("ContentTaggerApplication.oncreate(): calling supertype oncreate")
 
             // first call the supertype method and pass a callback
-            proto.oncreate.call(this,function(){
+            super.oncreate(() => {
                 console.log("ContentTaggerApplication.oncreate(): back from supertype oncreate");
 
-                toggleCrudscopeButtons = document.getElementsByClassName("cta-toggle-crudscope");
-                console.log("ContentTaggerApplication.oncreate(): found " + toggleCrudscopeButtons.length + "  toogle-crudscope buttons");
+                this.toggleCrudscopeButtons = document.getElementsByClassName("cta-toggle-crudscope");
+                console.log("ContentTaggerApplication.oncreate(): found " + this.toggleCrudscopeButtons.length + "  toogle-crudscope buttons");
 
                 // here, we instantiate the data access components
-                GenericCRUDImplLocal.initialiseDB("mwfdb", 1, ["Tag", "Note", "Place"], function () {
+                GenericCRUDImplLocal.initialiseDB("mwfdb", 1, ["Tag", "Note", "Place"], () => {
 
                     this.registerEntity("Tag", entities.Tag, true);
                     this.registerCRUD("Tag", this.CRUDOPS.LOCAL, GenericCRUDImplLocal.newInstance("Tag"));
@@ -38,30 +40,28 @@ define(["mwf","mwfUtils","EntityManager","entities","entitiesTest","GenericCRUDI
                     this.registerCRUD("Place", this.CRUDOPS.REMOTE, GenericCRUDImplRemote.newInstance("Place"));
 
                     // THIS WILL RESULT IN SETTING THE CRUD DECLARATIONS ON THE entity manager
-                    this.initialiseCRUD(initialCRUDScope,EntityManager);
+                    this.initialiseCRUD(this.initialCRUDScope,EntityManager);
 
 
                     // THIS MUST NOT BE FORGOTTEN: initialise the entity manager!
                     EntityManager.initialise();
 
-                    //entitiesTest.test();
-
                     console.log("ContentTaggerApplication.oncreate(): done.");
                     callback();
-                }.bind(this));
+                });
 
-            }.bind(this));
+            });
 
         }
 
-        this.initialiseCRUD = function(scope,em) {
-            proto.initialiseCRUD.call(this,scope,em);
-            for (var i=0;i<toggleCrudscopeButtons.length;i++) {
+        initialiseCRUD(scope,em) {
+            super.initialiseCRUD(scope,em);
+            for (var i=0;i<this.toggleCrudscopeButtons.length;i++) {
                 if (this.currentCRUDScope == this.CRUDOPS.REMOTE) {
-                    toggleCrudscopeButtons[i].classList.add("cta-crudscope-remote");
+                    this.toggleCrudscopeButtons[i].classList.add("cta-crudscope-remote");
                 }
 
-                toggleCrudscopeButtons[i].onclick = function(event) {
+                this.toggleCrudscopeButtons[i].onclick = (event) => {
                     console.log("toggleCrudscope(): current scope is: " + this.currentCRUDScope);
                     // toggle the class assignment on the button
                     event.target.classList.toggle("cta-crudscope-remote");
@@ -74,13 +74,11 @@ define(["mwf","mwfUtils","EntityManager","entities","entitiesTest","GenericCRUDI
                     }
 
                     this.notifyListeners(new mwf.Event("crud","changedScope"));
-                }.bind(this);
+                };
             }
         }
 
     }
-
-    mwf.xtends(ContentTaggerApplication,mwf.Application);
 
     var instance = new ContentTaggerApplication();
 

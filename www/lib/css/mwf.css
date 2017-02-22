@@ -150,7 +150,9 @@ fieldset.mwf-radiogroup  input[type=radio] {
     display: inline-block;
     margin-right: 7px;
     width: auto;
+    height: auto;
 }
+
 fieldset.mwf-radiogroup input[type=radio]:not(:first-of-type) {
     margin-left: 15px;
 }

@@ -4,7 +4,7 @@
 
 // we use the model from which we take the location type
 // TODO: organise this differently
-define(function() {
+define(function () {
 
     // this needs to be global
     var mapObject;
@@ -14,31 +14,29 @@ define(function() {
      */
     function MapHolder() {
 
-        console.log("MapHolder.constructor()")
+        console.log("MapHolder.constructor()");
 
         var mapWrapper = document.getElementById("mwf-mapwrapper");
         var mapElement = document.getElementById("map");
 
         if (mapWrapper && mapElement) {
-            console.log("MapHolder.constructor(): found a map wrapper and map: " + mapWrapper + "/" + map);
-        }
-        else if (!mapWrapper && mapElement) {
+            console.log("MapHolder.constructor(): found a map wrapper and map: " + mapWrapper + "/" + mapElement);
+        } else if (!mapWrapper && mapElement) {
             console.info("MapHolder.constructor(): no map wrapper element found. Application seem to use maps without holder.");
-        }
-        else if (!mapWrapper) {
+        } else if (!mapWrapper) {
             console.info("MapHolder.constructor(): no map wrapper element found. Application does not seem to use maps.");
         }
 
-        this.attach = function(root) {
+        this.attach = function (root) {
             console.log("attach()");
             if (!mapWrapper) {
                 console.error("something is wrong. Application seems to use map holder, but no map wrapper element exists");
             }
             // if the holder is detached correctly, we do not need to do any checks here or clear the root
             root.appendChild(mapWrapper);
-        }
+        };
 
-        this.createMap = function(initialiseView,params) {
+        this.createMap = function (initialiseView, params) {
             console.log("createMap(): mapObject is: " + mapObject);
 
             if (!mapObject) {
@@ -62,13 +60,14 @@ define(function() {
                 }).addTo(mapObject);
 
                 var marker = L.marker(latlong).addTo(mapObject);
+                console.log("marker: " + marker);
             }
             console.log("createMap(): done. Returning mapObject: " + mapObject);
 
             return mapObject;
-        }
+        };
 
-        this.detach = function() {
+        this.detach = function () {
             //console.log("detach()");
             //
             ////mapObject.remove();
@@ -80,7 +79,7 @@ define(function() {
             //else {
             //    console.log("detach(): no need to detach. Map does not seem to be attached currently...");
             //}
-        }
+        };
 
     }
 

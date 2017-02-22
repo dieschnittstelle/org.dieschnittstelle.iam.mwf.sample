@@ -1,7 +1,7 @@
 /**
  * @author Jörn Kreutel
  */
-define(["mwf","entities"], function(mwf, entities) {
+define(["mwf", "entities"], function (mwf, entities) {
 
     function GenericDialogTemplateViewController() {
         console.log("GenericDialogTemplateViewController()");
@@ -20,9 +20,9 @@ define(["mwf","entities"], function(mwf, entities) {
             // we will be passed arguments that specify action bindings
             if (!this.args.actionBindings) {
                 console.warn("no actionBindings passed to handle actions in template: " + this.root.getAttribute("data-mwf-templatename"));
-            }
-            else {
-                for (var action in this.args.actionBindings) {
+            } else {
+                var action;
+                for (action in this.args.actionBindings) {
                     console.log("adding binding for action: " + action);
                     this.root.viewProxy.bindAction(action,this.args.actionBindings[action]);
                 }
@@ -30,7 +30,7 @@ define(["mwf","entities"], function(mwf, entities) {
 
             // call the superclass once creation is done
             proto.onresume.call(this,callback);
-        }
+        };
 
     }
 
