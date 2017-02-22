@@ -4,12 +4,16 @@
 define(["mwf","mwfUtils"], function(mwf,mwfUtils) {
     console.log("loading module...");
 
-    function SidemenuViewController() {
+    class SidemenuViewController extends mwf.SidemenuViewController {
 
-        var proto = SidemenuViewController.prototype;
+        constructor() {
+            console.log("<constructor>");
+            super();
+        }
 
         // here, the default action should be called at the end after handling, e.g., particular actions locally
-        this.onMenuItemSelected = function(item) {
+        onMenuItemSelected(item) {
+            console.log("onMenuItemSelected()");
 
             if (item.getAttribute("data-mwf-id") == "mainmenu-reset") {
                 if (confirm("Sollen alle lokalen Daten zurückgesetzt werden?")) {
@@ -23,15 +27,11 @@ define(["mwf","mwfUtils"], function(mwf,mwfUtils) {
                 }
             }
             else {
-                proto.onMenuItemSelected.call(this, item);
+                super.onMenuItemSelected(item);
             }
-
         }
 
     }
-
-    // we extend the generic vc for the side menu
-    mwf.xtends(SidemenuViewController,mwf.SidemenuViewController);
 
     return SidemenuViewController;
 

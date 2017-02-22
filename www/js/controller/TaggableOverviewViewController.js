@@ -3,23 +3,24 @@
  */
 define(["mwf","mwfUtils","entities"], function(mwf, mwfUtils,entities) {
 
-    function TaggableOverviewViewController() {
-        console.log("TaggableOverviewViewController()");
+    class TaggableOverviewViewController extends mwf.ViewController {
 
-        // declare a variable for accessing the prototype object (used für super() calls)
-        var proto = TaggableOverviewViewController.prototype;
+        constructor() {
+            console.log("TaggableOverviewViewController()");
+            super();
 
-        var viewProxy;
+            this.viewProxy = null;
+        }
 
         /*
          * for any view: initialise the view
          */
-        this.oncreate = function (callback) {
+        oncreate(callback) {
             // we first render the empty view and then load the content
-            viewProxy = this.bindElement("taggableTemplate", this.args, this.root).viewProxy;
+            this.viewProxy = this.bindElement("taggableTemplate", this.args, this.root).viewProxy;
 
             // add an action binding
-            viewProxy.bindAction("showContentItem",function(event){
+            this.viewProxy.bindAction("showContentItem",(event) => {
                 // this is required in order to avoid that the listview tries to read out the item (which will result in an error)
                 event.original.stopPropagation();
 
@@ -28,36 +29,36 @@ define(["mwf","mwfUtils","entities"], function(mwf, mwfUtils,entities) {
 
                 switch(segmented.typename) {
                     case "Note":
-                        entities.Note.read(segmented.id,function(item){
+                        entities.Note.read(segmented.id,(item) => {
                            this.nextView("notesReadview",{item: item});
-                        }.bind(this));
+                        });
                         break;
                     case "Place":
-                        entities.Place.read(segmented.id,function(item){
+                        entities.Place.read(segmented.id,(item) => {
                             this.nextView("placesEditview",{item: item});
-                        }.bind(this));
+                        });
                         break;
                     default:
                         mwfUtils.showToast("cannot handle item type: " + segmented.typename);
                 }
-            }.bind(this));
+            });
 
             // load the tagged entities given the tag
-            this.args.item.contentItems.load(function(){
+            this.args.item.contentItems.load(() => {
                 var loaded = this.args.item.contentItems;
                 console.log("loaded " +  loaded.length + " elements: " + mwf.stringify(loaded));
                 // we read out the types of the items and group them by type
-                viewProxy.update({item: this.args.item,groups:/*[{name: "TestType", contentItems: loaded}]*/groupItems(loaded)});
-            }.bind(this));
+                this.viewProxy.update({item: this.args.item,groups:/*[{name: "TestType", contentItems: loaded}]*/this.groupItems(loaded)});
+            });
 
             // call the superclass once creation is done
-            proto.oncreate.call(this,callback);
+            super.oncreate(callback);
         }
 
-        function groupItems(items) {
+        groupItems(items) {
 
             var groups = new Object();
-            items.forEach(function(item){
+            items.forEach((item) => {
                var typename = item.getTypename();
                var typeitems = groups[typename];
                 if (!typeitems) {
@@ -78,9 +79,6 @@ define(["mwf","mwfUtils","entities"], function(mwf, mwfUtils,entities) {
 
 
     }
-
-    // extend the view controller supertype
-    mwf.xtends(TaggableOverviewViewController,mwf.ViewController);
 
     // and return the view controller function
     return TaggableOverviewViewController;

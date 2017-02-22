@@ -27,7 +27,6 @@ requirejs.config({
             ContentTaggerApplication: 'js/ContentTaggerApplication',
             /* application libraries: model */
             entities: 'js/model/Entities',
-            entitiesTest: 'js/model/EntitiesTest',
             /* application libraries: controller for generic elements */
             TagSelectionDialogViewController: 'js/controller/TagSelectionDialogViewController',
             SidemenuViewController: 'js/controller/SidemenuViewController',
@@ -35,7 +34,6 @@ requirejs.config({
             /* ... for tags */
             TagsOverviewViewController: 'js/controller/TagsOverviewViewController',
             TaggableOverviewViewController: 'js/controller/TaggableOverviewViewController',
-            TaggableEditviewViewController: 'js/controller/TaggableEditviewViewController',
             /* ... for notes */
             NotesOverviewViewController: 'js/controller/NotesOverviewViewController',
             NotesEditviewViewController: 'js/controller/NotesEditviewViewController',
@@ -48,9 +46,8 @@ requirejs.config({
 );
 
 // here, we load all modules that will be required at runtime, those that will be instantiated dynamically by the mwf core framework need to be declared explicitly here - this is necessary for all ViewController components
-requirejs(["mwf","entitiesTest", "EntityManager","ContentTaggerApplication", "SidemenuViewController", "TagsOverviewViewController","TaggableOverviewViewController", "TaggableEditviewViewController","NotesOverviewViewController","NotesEditviewViewController","NotesReadviewViewController","TagSelectionDialogViewController","MapViewController","PlacesOverviewViewController","PlacesEditviewViewController","GenericDialogTemplateViewController"],
+requirejs(["mwf", "EntityManager","ContentTaggerApplication", "SidemenuViewController", "TagsOverviewViewController","TaggableOverviewViewController", "NotesOverviewViewController","NotesEditviewViewController","NotesReadviewViewController","TagSelectionDialogViewController","MapViewController","PlacesOverviewViewController","PlacesEditviewViewController","GenericDialogTemplateViewController"],
 
     function (mwf) {
         mwf.onloadApplication();
-        //entitiesTest.test();
     });

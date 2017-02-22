@@ -4,45 +4,48 @@
 define(["mwf",  "mwfUtils", "entities"], function (mwf,  mwfUtils, entities) {
     console.log("loading module...");
 
-    function TagsOverviewViewController() {
+    class TagsOverviewViewController extends mwf.ViewController {
 
-        var proto = TagsOverviewViewController.prototype;
+        constructor() {
+            console.log("TagsOverviewViewController");
+            super();
+        }
 
         /*
          * initialise the view oncreate
          */
-        this.oncreate = function (callback) {
-            proto.oncreate.call(this, function () {
+        oncreate(callback) {
+            super.oncreate(() => {
 
                 // initialise the add action
-                document.getElementById("newTagAction").onclick = function(event) {
+                document.getElementById("newTagAction").onclick = (event) => {
                     this.showDialog("editTagDialog",new entities.Tag());
-                }.bind(this);
+                };
 
                 // set listener for the crud events (new tags may also be created by the selection dialog)
-                this.addListener(new mwf.EventMatcher("crud","created","Tag"),function(event){
+                this.addListener(new mwf.EventMatcher("crud","created","Tag"),(event) => {
                     this.addToListview(event.data);
-                }.bind(this));
-                this.addListener(new mwf.EventMatcher("crud","updated","Tag"),function(event){
+                });
+                this.addListener(new mwf.EventMatcher("crud","updated","Tag"),(event) => {
                     this.updateInListview(event.data._id,event.data);
-                }.bind(this));
-                this.addListener(new mwf.EventMatcher("crud","deleted","Tag"),function(event){
+                });
+                this.addListener(new mwf.EventMatcher("crud","deleted","Tag"),(event) => {
                     this.removeFromListview(event.data);
-                }.bind(this));
+                });
                 // we also listen to the change of the crudops
-                this.addListener(new mwf.EventMatcher("crud","changedScope"),function(event){
+                this.addListener(new mwf.EventMatcher("crud","changedScope"),(event) => {
                    console.log("scope of crudops has changed. Reload entities and refresh listview...");
-                    entities.Tag.readAll(function (tags) {
+                    entities.Tag.readAll((tags) => {
                         this.initialiseListview(tags);
-                    }.bind(this));
-                }.bind(this));
+                    });
+                });
 
-                entities.Tag.readAll(function (tags) {
+                entities.Tag.readAll((tags) => {
                     this.initialiseListview(tags);
-                }.bind(this));
+                });
 
                 callback();
-            }.bind(this));
+            });
         }
 
         /*
@@ -56,48 +59,48 @@ define(["mwf",  "mwfUtils", "entities"], function (mwf,  mwfUtils, entities) {
         /*
          * bind the edit dialog - note that dialog will be template of the form {root:..., body:...}
          */
-        this.bindDialog = function(dialogid,dialog,item) {
+        bindDialog(dialogid,dialog,item) {
             // first call the superclass to instantiate the dialog
-            proto.bindDialog.call(this,dialogid,dialog,item);
+            super.bindDialog(dialogid,dialog,item);
             // listen to form submission
-            dialog.root.querySelector("#tagNameInputForm").onsubmit = function(event) {
+            dialog.root.querySelector("#tagNameInputForm").onsubmit = (event) => {
                 console.log("submit()");
 
                 // if we use bidirectional data binding, we will always receice an item whose attributes will be bound to the values input by the user
                 // if a new item shall be created, it will not have been assigned an id yet
                 if (item.created) {
                     console.log("will update item: " + mwf.stringify(item));
-                    item.update(function() {
+                    item.update(() => {
                         console.log("submitTag(): update finished.");
-                    }.bind(this));
+                    });
                 }
                 else {
                     console.log("will create new item: " + mwf.stringify(item));
-                    item.create(function() {
+                    item.create(() => {
                         console.log("submitTag(): create finished.");
-                    }.bind(this));
+                    });
                 }
 
                 this.hideDialog();
 
                 return false;
-            }.bind(this);
+            };
 
 
             // listen to item deletion
-            dialog.root.querySelector("#deleteTagAction").onclick = function(event) {
-                item.delete(function(){
+            dialog.root.querySelector("#deleteTagAction").onclick = (event) => {
+                item.delete(() => {
                     console.log("deleteTag(): finished.");
-                }.bind(this));
+                });
 
                 this.hideDialog();
-            }.bind(this);
+            };
         }
 
         /*
          * react to the listitem menu action - in fact, we do not display a menu, but right aways the edit dialog
          */
-        this.onListItemMenuSelected = function (liitem) {
+        onListItemMenuSelected(liitem) {
             console.log("onListItemMenuSelected(): " + JSON.stringify(item));
 
             // we need to retrieve the actual item object
@@ -109,16 +112,13 @@ define(["mwf",  "mwfUtils", "entities"], function (mwf,  mwfUtils, entities) {
         /*
          * show the tag
          */
-        this.showTag = function(tag) {
+        showTag(tag) {
             console.log("showTag(): " + tag._id);
             this.nextView("taggableOverview",{item: tag});
         }
 
     }
 
-
-    // we extend the generic vc for the side menu
-    mwf.xtends(TagsOverviewViewController, mwf.ViewController);
 
     return TagsOverviewViewController;
 

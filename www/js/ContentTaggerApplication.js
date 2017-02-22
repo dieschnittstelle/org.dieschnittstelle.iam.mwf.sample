@@ -1,7 +1,7 @@
 /**
  * Created by master on 17.02.16.
  */
-define(["mwf","mwfUtils","EntityManager","entities","entitiesTest","GenericCRUDImplLocal","GenericCRUDImplRemote"],function(mwf,mwfUtils,EntityManager,entities,entitiesTest,GenericCRUDImplLocal,GenericCRUDImplRemote){
+define(["mwf","mwfUtils","EntityManager","entities","GenericCRUDImplLocal","GenericCRUDImplRemote"],function(mwf,mwfUtils,EntityManager,entities,GenericCRUDImplLocal,GenericCRUDImplRemote){
 
     function ContentTaggerApplication() {
 
@@ -43,8 +43,6 @@ define(["mwf","mwfUtils","EntityManager","entities","entitiesTest","GenericCRUDI
 
                     // THIS MUST NOT BE FORGOTTEN: initialise the entity manager!
                     EntityManager.initialise();
-
-                    //entitiesTest.test();
 
                     console.log("ContentTaggerApplication.oncreate(): done.");
                     callback();

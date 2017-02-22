@@ -14,13 +14,11 @@ define(["mwfUtils", "EntityManager", "GenericCRUDImplLocal"], function (mwfUtils
      * Taggable
      *************/
 
-    function Taggable() {
-        this.instantiateManagedAttributes();
+    class Taggable extends EntityManager.Entity {
+
     }
 
-    // use EntityManager.xtends in order to add entity-specific behaviour
-    EntityManager.xtends(Taggable, EntityManager.Entity);
-    // TODO: the redundancy of inverse declaration is highly suboptimal... need to think of an alternative solution, e.g. processing managedAttributes once instantiateManagedAttributes is called the first time?
+    // TODO: the redundancy of inverse declaration is suboptimal... need to think of an alternative solution, e.g. processing managedAttributes once instantiateManagedAttributes is called the first time?
     EntityManager.Entity.prototype.declareManagedAttribute(Taggable, "tags", "Tag", {
         multiple: true,
         inverse: "contentItems"
@@ -32,15 +30,18 @@ define(["mwfUtils", "EntityManager", "GenericCRUDImplLocal"], function (mwfUtils
      * Tag
      *************/
 
-    function Tag(name, description) {
-        this.name = name;
-        this.description = description;
-        this.instantiateManagedAttributes();
+    class Tag extends EntityManager.Entity {
+
+        constructor(name, description) {
+            super();
+
+            this.name = name;
+            this.description = description;
+        }
+
     }
 
-    // use EntityManager.xtends in order to add entity-specific behaviour
-    EntityManager.xtends(Tag, EntityManager.Entity);
-    // the inverse declarations are redundant!!!
+    // the inverse declarations are redundant
     EntityManager.Entity.prototype.declareManagedAttribute(Tag, "contentItems", "Taggable", {
         multiple: true,
         allowTransient: true,
@@ -52,24 +53,25 @@ define(["mwfUtils", "EntityManager", "GenericCRUDImplLocal"], function (mwfUtils
      * Note
      *************/
 
-    function Note(name, content) {
-        this.name = name;
-        this.content = content;
-        this.lastModified = Date.now();
+    class Note extends Taggable {
 
-        this.test = function () {
-            return lastModified;
-        }
+        constructor(name, content) {
+            super();
 
-        this.markModified = function () {
+            this.name = name;
+            this.content = content;
             this.lastModified = Date.now();
         }
 
-        this.instantiateManagedAttributes();
-    }
+        test() {
+            return lastModified;
+        }
 
-    // use EntityManager.xtends in order to add entity-specific behaviour
-    EntityManager.xtends(Note, Taggable);
+        markModified() {
+            this.lastModified = Date.now();
+        }
+
+    }
 
     // specifiy specific getters for date format
     Object.defineProperty(Note.prototype, "lastModifiedDateString", {
@@ -88,25 +90,28 @@ define(["mwfUtils", "EntityManager", "GenericCRUDImplLocal"], function (mwfUtils
      *************/
 
     /* the location type will not be dealt with as an entity in order to be simply embeddable - there will be a specific place entity for this purpose */
-    function Location(lat, lng, name) {
-        this.lat = lat;
-        this.lng = lng;
-        this.name = name ? name : null;
+    class Location {
+
+        constructor(lat, lng, name) {
+            this.lat = lat;
+            this.lng = lng;
+            this.name = name ? name : null;
+        }
     }
 
     /*****************
      * Place (Entity)
      *****************/
 
-    function Place(name) {
-        this.name = name;
+    class Place extends Taggable {
 
-        this.instantiateManagedAttributes();
+        constructor(name) {
+            super();
+
+            this.name = name;
+        }
+
     }
-
-    // use EntityManager.xtends in order to add entity-specific behaviour
-    EntityManager.xtends(Place, Taggable);
-
 
     return {
         Place: Place,

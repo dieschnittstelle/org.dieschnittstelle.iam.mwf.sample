@@ -1493,25 +1493,26 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
     /*
      * extension for embedded view controllers that require additional functions
      */
-    function EmbeddedViewController() {
+    class EmbeddedViewController extends ViewController {
 
-        var proto = EmbeddedViewController.prototype;
+        constructor() {
+            super();
+            this.parent = null;
+        }
 
-        this.parent = null;
-
-        this.oncreate = function (callback) {
-            proto.oncreate.call(this, function () {
+        oncreate(callback) {
+            super.oncreate(() => {
                 callback();
-            }.bind(this));
-        };
+            });
+        }
 
-        this.attachToView = function (view) {
+        attachToView(view) {
             console.log("attaching component " + this.root.id + " to view: " + view.id);
             this.parent = view;
-        };
+        }
 
-        this.detachFromView = function () {
-            if (parent) {
+        detachFromView() {
+            if (this.parent) {
                 console.log("detaching component " + this.root.id + " from current view");
             }
             else {
@@ -1521,40 +1522,38 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
 
     }
 
-    // extend the base ViewController type
-    mwfUtils.xtends(EmbeddedViewController, ViewController);
-
     /*
      * generic implementation of a view controller that controls the usage of the side menu - subtypes only need to override the onMenuItemSelected() function
      */
-    function SidemenuViewController() {
+    class SidemenuViewController extends EmbeddedViewController {
 
-        // this is for convenience: we use the proto variable for having a shortcut to supertype members
-        var proto = SidemenuViewController.prototype;
+        constructor() {
+            super();
 
-        // the action to open the menu
-        var mainmenuAction;
+            // the action to open the menu
+            this.mainmenuAction = null;
+            // the event listeners that will result in showing and hiding the menu
+            this.showMenu = null;
+            this.hideMenu = null;
+        }
 
-        // the event listeners that will result in showing and hiding the menu
-        var showMenu;
-        var hideMenu;
 
-        this.oncreate = function (callback) {
-            proto.oncreate.call(this, function () {
+        oncreate(callback) {
+            super.oncreate(() => {
 
-                showMenu = function (event) {
+                this.showMenu = (event) => {
                     console.log("showMenu()");
                     hideMenusAndDialogs.call(this);
                     this.root.classList.add("mwf-expanded");
                     this.root.onclick = cancelClickPropagation;
                     // we must not propagate, otherwise this triggers the hideMenu listener...
                     event.stopPropagation();
-                }.bind(this);
+                };
 
-                hideMenu = function () {
+                this.hideMenu = () => {
                     console.log("hideMenu()");
                     this.root.classList.remove("mwf-expanded");
-                }.bind(this);
+                };
 
                 // from the root we try to read out the menu items... something gets wrong here...
                 var menuItems = this.root.getElementsByClassName("mwf-menu-item");
@@ -1562,19 +1561,19 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
                 var i;
                 for (i = 0; i < menuItems.length; i++) {
                     console.log("setting listener on: " + menuItems[i].getAttribute("data-mwf-id"));
-                    menuItems[i].onclick = function (event) {
+                    menuItems[i].onclick = (event) => {
                         if (event.currentTarget.classList.contains("mwf-menu-item")) {
                             this.onMenuItemSelected(event.currentTarget);
                         }
-                    }.bind(this);
+                    };
                 }
 
                 callback();
-            }.bind(this));
+            });
 
         };
 
-        this.onMenuItemSelected = function (item) {
+        onMenuItemSelected(item) {
             console.log("onMenuItemSelected(): " + item);
             console.log("onMenuItemSelected(): id " + item.id + "/ mwf-id " + item.getAttribute("data-mwf-id"));
             var currentSelected = document.getElementsByClassName("mwf-selected");
@@ -1593,13 +1592,12 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
             else {
                 mwfUtils.showToast("option " + item.getAttribute("data-mwf-id") + " is not supported yet!");
             }
-
-        };
+        }
 
         // handle attachment
-        this.attachToView = function (view) {
+        attachToView(view) {
             console.log("attachToView: " + view);
-            proto.attachToView.call(this, view);
+            super.attachToView(view);
 
             // we lookup the mainmenu action from the view and attach to it
             var mainmenuActionElements = view.getElementsByClassName("mwf-img-sandwich-action");
@@ -1609,33 +1607,31 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
             }
             else {
                 // add the handler to open the menu
-                mainmenuAction = mainmenuActionElements[0];
-                mainmenuAction.addEventListener("click", showMenu);
+                this.mainmenuAction = mainmenuActionElements[0];
+                this.mainmenuAction.addEventListener("click", this.showMenu);
                 // add a handler to close the menu on the whole parent element (which will be partially hidden by ourselves)
-                this.parent.addEventListener("click", hideMenu);
+                this.parent.addEventListener("click", this.hideMenu);
             }
         };
 
         // handle detachment, in this case, we set the mainmenuAction to null
-        this.detachFromView = function () {
-            proto.detachFromView.call(this);
+        detachFromView() {
+            super.detachFromView();
 
             // if on detaching, the menu is shown, we need to hide it
             if (this.root.classList.contains("mwf-expanded")) {
-                hideMenu();
+                this.hideMenu();
             }
 
-            if (mainmenuAction) {
-                mainmenuAction.removeEventListener("click", showMenu);
-                this.parent.removeEventListener("click", hideMenu);
-                mainmenuAction = null;
+            if (this.mainmenuAction) {
+                this.mainmenuAction.removeEventListener("click", this.showMenu);
+                this.parent.removeEventListener("click", this.hideMenu);
+                this.mainmenuAction = null;
             }
 
-        };
+        }
 
     }
-
-    mwfUtils.xtends(SidemenuViewController, EmbeddedViewController);
 
     /*
      * application superclass, holds shared resources, and subclasses may implement shared logics
