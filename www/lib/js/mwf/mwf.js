@@ -1720,7 +1720,7 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
             }
 
             var entitytype;
-            for (entitytype in crudops) {
+            for (entitytype in this.crudops) {
                 this.switchCRUDForType(entitytype,scope,em);
             }
             this.currentCRUDScope = scope;
