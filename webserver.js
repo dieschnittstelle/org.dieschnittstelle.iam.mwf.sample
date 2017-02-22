@@ -5,7 +5,6 @@
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
-var sys = require('sys');
 
 var utils = require("./njsimpl/njsutils");
 
@@ -14,12 +13,13 @@ var http2mdb = require("./njsimpl/http2mdb");
 // the HTTP server
 var server;
 // the port on which the server will be started
-var port = 8393;
-
+var port = 8383;
 // the ip address
 var ip = /*"127.0.0.1";*/utils.getIPAddress();
+// the segment for identifying the rest api
+var apiref = "api";
 
-// this might no be the most elegant solution to avoid the event emitter error message..., see http://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected 
+// this might no be the most elegant solution to avoid the event emitter error message..., see http://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected
 
 server = http.createServer(function(req, res) {
     var path = url.parse(req.url).pathname;
@@ -27,9 +27,18 @@ server = http.createServer(function(req, res) {
     console.log("onHttpRequest(): trying to serve path: " + path);
 
     // check whether we have an api call or need to serve a file
-    if (path.indexOf("/http2mdb/") == 0) {
-        console.log("onHttpRequest(): got a call to the http2mdb api. Will continue processing there...");
-        http2mdb.processRequest(req, res);
+    if (path.indexOf("/http2mdb/") == 0 && apiref != "http2mdb") {
+        console.error("onHttpRequest(): ERROR: legacy api prefix http2mdb is being used, but prefix is set to: " + apiref + "!");
+        res.writeHead(404);
+        res.end();
+    } else if (path.indexOf("/available") == 0) {
+        console.log("onHttpRequest(): received an availability request, respond with success");
+        res.writeHead(204);
+        res.end();
+    }
+    else if (path.indexOf("/" + apiref + "/") == 0) {
+        console.log("onHttpRequest(): got a call to the rest api. Will continue processing there...");
+        http2mdb.processRequest(req, res, apiref);
     } else {
         if (path.length > 1 && path.indexOf("%7D%7D") == path.length-6) {
             console.warn("onHttpRequest(): path seems to be a template filling expression. Will not deliver anything.");
@@ -41,6 +50,11 @@ server = http.createServer(function(req, res) {
                 // if the root is accessed we serve the main html document
                 path = "app.html";
             }
+            else {
+                // we need to consider that the path may be url encoded, e.g. in case a filename contains blanks
+                path = decodeURI(path);
+            }
+
             // serveable resources will be put in the webcontent directory -- the callback will be passed the data read out from the file being accessed
             fs.readFile(__dirname + "/www/" + path, function (err, data) {
                 // check whether we have got an error retrieving the resource: create a 404 error, assuming that a wrong uri was used
@@ -74,10 +88,10 @@ server = http.createServer(function(req, res) {
             console.log("onHttpRequest(): response is null. No need to finish...");
         }
     });
-    
+
     // don't limit the amount of event listeners
     process.setMaxListeners(0);
-    
+
 });
 
 
