@@ -15,10 +15,8 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
             // map view may be used for selecting / inputting a location
             this.enableInput = false;
 
-            // the marker layers (a layer is a mapping from a string to an array of locationItem Ids) - TODO: check whether leaflet provides their own layering mechanism!
-            this.markerLayers = [];
-            // locationItems contains a mapping from mapview-ids of locationItems to objects of the form {item:...,popup:...}, where item is a locationItem and popup the popup for this item
-            this.locationItems = [];
+            // the map
+            this.map = null;
         }
 
 
@@ -55,16 +53,32 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
 
                 // we use the mapHolder
                 mapHolder.attach(this.root.getElementsByClassName("mwf-body")[0]);
-                var map = mapHolder.createMap();
 
-                // we read out all places and add the items to the map
-                entities.Place.readAll((places) => {
-                    console.log("read " + places.length + " places");
-                    places.forEach((p) => {
-                        mapHolder.addMarker(p);
+                if (this.map == null) {
+
+                    this.map = mapHolder.createMap();
+
+                    // create the popup
+                    // we read out all places and add the items to the map
+                    entities.Place.readAll((places) => {
+                        console.log("read " + places.length + " places");
+                        places.forEach((p) => {
+                            // create the popup
+                            var popup = this.getTemplateInstance("placesOverviewMarkerPopup").root;
+                            // we set the place name
+                            popup.querySelector(".mwf-map-popup-content").textContent = p.name;
+                            popup.onclick = () => {
+                                this.map.closePopup();
+                                this.nextView("placesEditview", {item: p, mode: "view"});
+                            }
+                            mapHolder.addMarker(p, popup);
+                        });
+                        mapHolder.arrange();
                     });
+                }
+                else {
                     mapHolder.arrange();
-                });
+                }
 
                 // TODO: and do not forget to call the callback function that is passed to us - if asychronous functions are used for initialisation, calling callback needs to be done in the respective callback functions
                 callback();

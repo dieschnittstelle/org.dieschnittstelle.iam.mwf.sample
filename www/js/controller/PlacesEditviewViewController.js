@@ -144,6 +144,9 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
             this.viewProxy.update({item: this.placeItem, mode: this.mode});
         }
 
+        /*
+         * we
+         */
         onresume(callback) {
 
             // call the superclass method and pass a callback bound to this
@@ -155,7 +158,7 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
                     this.placeItem.location = new entities.Location(52.512764, 13.453245);
                 }
 
-                this.map = mapHolder.createMap({zoom:17,location: this.placeItem});
+                this.map = mapHolder.createMap({zoom:(this.placeItem.created ? 17 : 13),location: this.placeItem});
                 mapHolder.addMarker(this.placeItem);
 
                 // prepare the input popup for changing locations
@@ -163,15 +166,13 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
                 // this element always needs to be initialised regardless of whether the map is initialised or not
                 // for testing location selection from the map...
                 var inputPopup = L.popup();
-                var inputPopupContent = document.createElement("a");
-                inputPopupContent.classList.add("mwf-map-popup-content");
+                var inputPopupContent = this.getTemplateInstance("placesEditviewMarkerPopup").root;
+                console.log("template: ", inputPopupContent);
 
                 this.onmapclick = (mapclick) => {
                     console.log("onclick(): " + mapclick.latlng.lat + "/" + mapclick.latlng.lng);
 
                     console.log("creating inputPopup...");
-
-                    inputPopupContent.textContent = "auswählen?";
 
                     inputPopupContent.onclick = () => {
                         // this is a workaround, see https://leaflet.uservoice.com/forums/150880-ideas-and-suggestions-for-leaflet/suggestions/3272312-an-api-function-to-close-a-popup-at-the-moment-i

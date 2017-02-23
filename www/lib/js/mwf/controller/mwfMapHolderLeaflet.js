@@ -3,7 +3,8 @@
  */
 
 // we use the model from which we take the location type
-// TODO: organise this differently
+// TODO: organise this differently, there is still some optimisation potential, e.g. we could simply return ourselves
+// on createMap rather than the map and provide map access setting the map object as property
 define(function() {
 
     // this needs to be global
@@ -65,17 +66,24 @@ define(function() {
             return mapObject;
         }
 
-        this.addMarker = function(location) {
+        this.addMarker = function(location,popup) {
+
 
             var marker = markersMap.get(location);
             if (marker) {
                 console.log("marker already exists for location: " + location.name);
-                return;
+            }
+            else {
+                marker = L.marker(getLatLng(location)).addTo(markerGroup);
+                console.log("created new marker for location: " + location.name);
+                markersMap.set(location,marker);
             }
 
-            var marker = L.marker(getLatLng(location)).addTo(markerGroup);
-            console.log("created new marker for location: " + location.name);
-            markersMap.set(location,marker);
+            if (popup) {
+                // add a popup to the marker (regardless of whether it had existed before or not)
+                marker.bindPopup(popup);
+            }
+
         }
 
         this.removeMarker = function(location) {
@@ -113,6 +121,7 @@ define(function() {
             mapObject.fitBounds(markersCoords);
         }
 
+        // explicit detaching does not seem to be necessary
         this.detach = function() {
             //console.log("detach()");
             //

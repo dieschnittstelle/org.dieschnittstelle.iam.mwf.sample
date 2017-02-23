@@ -54,6 +54,9 @@ define(["mwf","entities"], function(mwf, entities) {
             });
         }
 
+        editPlace(item) {
+            this.nextView("placesEditview", {item: item, mode: "edit"});
+        }
 
     }
 

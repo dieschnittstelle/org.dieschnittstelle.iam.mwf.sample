@@ -81,7 +81,7 @@
     Tags
   ------------->
 
-<div class="mwf-view " id="tagsOverview" data-mwf-viewcontroller="TagsOverviewViewController">
+<div class="mwf-view mwf-view-initial" id="tagsOverview" data-mwf-viewcontroller="TagsOverviewViewController">
     <header>
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
@@ -314,7 +314,7 @@
     PLaces
   ------------->
 
-<div class="mwf-view mwf-view-initial" id="placesOverview" data-mwf-viewcontroller="PlacesOverviewViewController">
+<div class="mwf-view" id="placesOverview" data-mwf-viewcontroller="PlacesOverviewViewController">
     <header>
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
@@ -344,7 +344,7 @@
         <div class="mwf-dialog-body">
             <ul>
                 <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="deletePlace">Löschen</li>
-                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetview="placesEditview">Editieren</li>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="editPlace">Editieren</li>
             </ul>
         </div>
     </div>
@@ -356,7 +356,7 @@
         <header>
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
-            <h2 class="mwf-dyncontent mwf-left-align">{{#if item.created}}Editieren: {{item.name}}{{else}}Neuer Ort{{/if}}</h2>
+            <h2 class="mwf-dyncontent mwf-left-align">{{#if item.created}}{{#if mode == 'edit'}}Editieren: {{/if}}{{item.name}}{{else}}Neuer Ort{{/if}}</h2>
             <!-- right-aligned items must be added in reverse order -->
             {{#if mode == 'edit'}}<input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>{{/if}}
             {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
@@ -392,6 +392,9 @@
             </button>
         </footer>
     </div>
+    <div class="mwf-template" data-mwf-templatename="placesEditviewMarkerPopup">
+        <a class="mwf-map-popup-content">Auswählen?</a>
+    </div>
 </div>
 
 <!-------------
@@ -410,7 +413,9 @@
         <!--   <button class="mwf-back mwf-imgbutton mwf-img-backward">
            </button>-->
     </footer>
-    <div id="popup"></div>
+    <div class="mwf-template" data-mwf-templatename="placesOverviewMarkerPopup">
+        <a class="mwf-map-popup-content">lorem ipsum</a>
+    </div>
 </div>
 </div>
 
