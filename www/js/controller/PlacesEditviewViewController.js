@@ -16,6 +16,15 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
 
             // the object that is dealt with by this view
             this.placeItem = null;
+
+            // this controller handels both view and edit mode and allows to switch between them
+            this.mode = "view";
+
+            // the map
+            this.map = null;
+
+            // we foresee an attribute for the mapclick function
+            this.onmapclick = null;
         }
 
         /*
@@ -25,10 +34,19 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
             // as the whole view is a template we need to first create it before calling oncreate on superclass, otherwise generic elements will not be initialised.
 
             console.log("oncreate() args: " + mwf.stringify(this.args) + "/" + this.root);
+
+            if (this.args && this.args.mode) {
+                console.log("mode is specified in args: " + this.args.mode);
+                this.mode = this.args.mode;
+            }
+            else {
+                console.log("no mode specified in args. Use view mode");
+            }
+
             this.placeItem = this.args.item;
 
             // we bind to the root element
-            this.viewProxy = this.bindElement("placesEditviewTemplate", {item: this.placeItem}, this.root).viewProxy;
+            this.viewProxy = this.bindElement("placesEditviewTemplate", {item: this.placeItem, mode: this.mode}, this.root).viewProxy;
 
             // attention! if the callback specified in the template does not exist, no error will be thrown!
             this.viewProxy.bindAction("pasteDefaultContent", () => {
@@ -54,7 +72,6 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
 
             // deal with form submission
             this.viewProxy.bindAction("submitPlaceForm", (event) => {
-
 
                 if (!this.placeItem.created) {
                     // create a new places item and return to the previous view
@@ -104,6 +121,10 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
                 });
             });
 
+            this.viewProxy.bindAction("setEditMode", () => {
+                this.setEditMode();
+            });
+
             // register for the "added" ui event for tag in order to be able to refresh the view
             this.addListener(new mwf.EventMatcher("ui", "added", "Tag"), (event) => {
                 if (event.data.receiverId == this.root.id) {
@@ -120,7 +141,7 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
         }
 
         refreshView() {
-            this.viewProxy.update(this.args);
+            this.viewProxy.update({item: this.placeItem, mode: this.mode});
         }
 
         onresume(callback) {
@@ -130,7 +151,46 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
 
                 mapHolder.attach(this.root.querySelector(".mwf-mapcontainer"));
 
-                map = mapHolder.createMap(true,{zoom:17, latlong: [52.512764, 13.453245]});
+                if (!this.placeItem.location) {
+                    this.placeItem.location = new entities.Location(52.512764, 13.453245);
+                }
+
+                this.map = mapHolder.createMap({zoom:17,location: this.placeItem});
+                mapHolder.addMarker(this.placeItem);
+
+                // prepare the input popup for changing locations
+
+                // this element always needs to be initialised regardless of whether the map is initialised or not
+                // for testing location selection from the map...
+                var inputPopup = L.popup();
+                var inputPopupContent = document.createElement("a");
+                inputPopupContent.classList.add("mwf-map-popup-content");
+
+                this.onmapclick = (mapclick) => {
+                    console.log("onclick(): " + mapclick.latlng.lat + "/" + mapclick.latlng.lng);
+
+                    console.log("creating inputPopup...");
+
+                    inputPopupContent.textContent = "auswählen?";
+
+                    inputPopupContent.onclick = () => {
+                        // this is a workaround, see https://leaflet.uservoice.com/forums/150880-ideas-and-suggestions-for-leaflet/suggestions/3272312-an-api-function-to-close-a-popup-at-the-moment-i
+                        inputPopup._close();
+                        console.log("inputPopupContent.onclick()")
+                        this.onConfirmInputLocation(mapclick.latlng);
+                    };
+
+                    inputPopup
+                        .setLatLng(mapclick.latlng)
+                        .setContent(inputPopupContent)
+                        .openOn(this.map);
+                }
+
+                // the input popup needs to be initialised for each usage of mapviewcontroller, otherwise this will point to the first controller instance for which the map was initialised...
+                if (this.mode == "edit") {
+                    // TODO: need to check whether this results in multiple additions in case the controller is used more than once
+                    this.map.on("click", this.onmapclick);
+                }
 
                 if (callback) {
                     callback();
@@ -138,6 +198,52 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
 
             });
 
+        }
+
+        // this is for updating the view once a mode change has occurred
+        onModeChanged() {
+            console.log("onModeChanged(): mode is: " + this.mode);
+            this.refreshView();
+            // we need to change the mode of the map
+            if (this.mode == "edit") {
+                this.map.on("click",this.onmapclick);
+            }
+            else {
+                this.map.off("click",this.onmapclick);
+            }
+        }
+
+        setEditMode() {
+            this.mode = "edit";
+            this.onModeChanged();
+        }
+
+        onback() {
+            // if we are in the edit mode, we will switch to the view mode unless the edit mode has been specified in the args
+            if (this.mode == "edit" && (this.args ? this.args.mode != "edit" : true)) {
+                console.log("onback(): we are in edit mode, just switch the mode");
+                this.mode = "view";
+                this.onModeChanged();
+            }
+            else {
+                console.log("onback(): we are not in edit mode or edit mode has been passed as an argument. go back.");
+                super.onback();
+            }
+        }
+
+        // we make sure that when leaving the view the click listener is removed (and also the markers?)
+        previousView() {
+            this.map.off("click", this.onmapclick);
+            super.previousView();
+        }
+
+        onConfirmInputLocation(latlng) {
+            console.log("onConfirmInputLocation()");
+
+            // we remove the existing marker
+            mapHolder.removeMarker(this.placeItem);
+            this.placeItem.location = new entities.Location(latlng.lat,latlng.lng);
+            mapHolder.addMarker(this.placeItem);
         }
     }
 

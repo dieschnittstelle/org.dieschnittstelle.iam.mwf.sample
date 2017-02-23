@@ -706,6 +706,7 @@ li input {
 
 .mwf-map-popup-content {
     color: black;
+    font-size: large;
 }
 
 body.mwf-loading-app {

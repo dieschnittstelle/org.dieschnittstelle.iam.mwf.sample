@@ -97,6 +97,7 @@ define(["mwfUtils", "EntityManager", "GenericCRUDImplLocal"], function (mwfUtils
             this.lng = lng;
             this.name = name ? name : null;
         }
+
     }
 
     /*****************
@@ -105,10 +106,15 @@ define(["mwfUtils", "EntityManager", "GenericCRUDImplLocal"], function (mwfUtils
 
     class Place extends Taggable {
 
-        constructor(name) {
+        constructor(name,location) {
             super();
 
             this.name = name;
+            this.location = location;
+        }
+
+        getLatlng() {
+            return [this.location.lat, this.location.lng];
         }
 
     }

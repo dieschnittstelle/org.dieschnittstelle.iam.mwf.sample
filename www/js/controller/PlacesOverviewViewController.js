@@ -18,7 +18,7 @@ define(["mwf","entities"], function(mwf, entities) {
 
 
             this.root.querySelector("#newPlaceAction").onclick = () => {
-                this.nextView("placesEditview",{item: new entities.Place()})
+                this.nextView("placesEditview",{item: new entities.Place(), mode: "edit"});
             };
 
             // register listener for crud events rather than handling changes in returnFromSubview

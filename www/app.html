@@ -81,7 +81,7 @@
     Tags
   ------------->
 
-<div class="mwf-view mwf-view-initial" id="tagsOverview" data-mwf-viewcontroller="TagsOverviewViewController">
+<div class="mwf-view " id="tagsOverview" data-mwf-viewcontroller="TagsOverviewViewController">
     <header>
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
@@ -314,7 +314,7 @@
     PLaces
   ------------->
 
-<div class="mwf-view" id="placesOverview" data-mwf-viewcontroller="PlacesOverviewViewController">
+<div class="mwf-view mwf-view-initial" id="placesOverview" data-mwf-viewcontroller="PlacesOverviewViewController">
     <header>
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
@@ -358,8 +358,9 @@
             </button>
             <h2 class="mwf-dyncontent mwf-left-align">{{#if item.created}}Editieren: {{item.name}}{{else}}Neuer Ort{{/if}}</h2>
             <!-- right-aligned items must be added in reverse order -->
-            <input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>
-            <button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>
+            {{#if mode == 'edit'}}<input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>{{/if}}
+            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
+            {{#unless mode == 'edit'}}<button class="mwf-imgbutton mwf-img-pencil mwf-right-align" data-mwf-id="editPlaceAction" on-click="setEditMode"></button>{{/unless}}
             <button class="mwf-imgbutton mwf-img-delete mwf-right-align" data-mwf-id="deletePlaceAction"></button>
         </header>
         <div class="mwf-body">
@@ -371,7 +372,7 @@
                         Name
                     </legend>
                     <input value="{{item.name}}" type="text" name="name" placeholder="..."
-                           required="required" autocomplete="off"/>
+                           required="required" autocomplete="off" disabled="{{#unless mode == 'edit'}}disabled{{/unless}}"/>
                 </fieldset>
                 <p></p>
             </form>
@@ -380,7 +381,7 @@
                     <ul>
                         {{#each item.tags}}
                         <!-- note that the iterator "tag" will not be used as prefix inside of the iteration (vs., e.g., JSF)!!! -->
-                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align" on-click="removeTag"></span></li>
+                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}{{#if mode == 'edit'}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align" on-click="removeTag"></span>{{/if}}</li>
                         {{/each}}
                     </ul>
                 </fieldset>

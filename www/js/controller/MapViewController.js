@@ -55,38 +55,16 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
 
                 // we use the mapHolder
                 mapHolder.attach(this.root.getElementsByClassName("mwf-body")[0]);
-                var map = mapHolder.createMap(true);
+                var map = mapHolder.createMap();
 
-                // this element always needs to be initialised regardless of whether the map is initialised or not
-                // for testing location selection from the map...
-                var inputPopup = L.popup();
-                var inputPopupContent = document.createElement("a");
-                inputPopupContent.classList.add("mwf-map-popup-content");
-
-                // the input popup needs to be initialised for each usage of mapviewcontroller, otherwise this will point to the first controller instance for which the map was initialised...
-                if (this.enableInput) {
-                    // TODO: need to check whether this results in multiple additions in case the controller is used more than once
-                    map.on("click", (mapclick) => {
-                        console.log("onclick(): " + mapclick.latlng.lat + "/" + mapclick.latlng.lng);
-
-                        console.log("creating inputPopup...");
-
-                        inputPopupContent.textContent = "auswählen?";
-
-                        inputPopupContent.onclick = () => {
-                            // this is a workaround, see https://leaflet.uservoice.com/forums/150880-ideas-and-suggestions-for-leaflet/suggestions/3272312-an-api-function-to-close-a-popup-at-the-moment-i
-                            inputPopup._close();
-                            console.log("inputPopupContent.onclick()")
-                            this.onInputLocation(mapclick.latlng);
-                        };
-
-                        inputPopup
-                            .setLatLng(mapclick.latlng)
-                            .setContent(inputPopupContent)
-                            .openOn(map);
+                // we read out all places and add the items to the map
+                entities.Place.readAll((places) => {
+                    console.log("read " + places.length + " places");
+                    places.forEach((p) => {
+                        mapHolder.addMarker(p);
                     });
-                }
-
+                    mapHolder.arrange();
+                });
 
                 // TODO: and do not forget to call the callback function that is passed to us - if asychronous functions are used for initialisation, calling callback needs to be done in the respective callback functions
                 callback();

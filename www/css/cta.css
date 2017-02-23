@@ -75,6 +75,17 @@
     padding: 12px;
 }
 
+/* the view/edit form for places */
+#placesEditview input[disabled] {
+    opacity: 1.0;
+    border-bottom-color: transparent;
+}
+
+#placesEditview .cta-tagpane li {
+    padding-right: 15px;
+}
+
+
 /*
  * local vs. remote
  */
