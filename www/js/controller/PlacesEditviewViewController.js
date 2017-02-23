@@ -145,7 +145,8 @@ define(["mwf","mwfUtils","entities","mapHolder"], function(mwf, mwfUtils,entitie
         }
 
         /*
-         * we
+         * currently, the map we display here will differ depending on whether the map overview had been shown before or not
+         * (if mapview was shown, all markers will be set)
          */
         onresume(callback) {
 
