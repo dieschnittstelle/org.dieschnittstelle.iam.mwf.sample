@@ -242,19 +242,21 @@
                     <input class="mwf-autofocus" value="{{item.name}}" type="text" name="name" placeholder="..."
                            required="required" autocomplete="off"/>
                 </fieldset>
-                <fieldset class="mwf-radiogroup">
-                    <input type='radio' name='{{item.contentType}}' value='plain' id="notesContentTypePlain" checked="checked"><label for="notesContentTypePlain"></label>Text</label>
-                    <input type='radio' name='{{item.contentType}}' value='file' id="notesContentTypeFile" checked="checked"><label for="notesContentTypeFile">Datei</label>
-                </fieldset>
+                <!-- remove the local/upload option from the view for the time being -->
+                <!--<fieldset class="mwf-radiogroup">-->
+                    <!--<input type='radio' name='{{item.contentType}}' value='plain' id="notesContentTypePlain" checked="checked"><label for="notesContentTypePlain"></label>Text</label>-->
+                    <!--<input type='radio' name='{{item.contentType}}' value='file' id="notesContentTypeFile" checked="checked"><label for="notesContentTypeFile">Datei</label>-->
+                <!--</fieldset>-->
+                <p></p>
                 <fieldset>
-                    {{#if item.contentType == 'plain'}}
+                    <!--{{#if item.contentType == 'plain'}}-->
                     <!-- textarea must not be realised as an empty tag -->
                     <textarea rows="5" value="{{item.content}}"></textarea>
-                    {{else}}
-                    <textarea rows="5" disabled="disabled"></textarea>
-                    {{/if}}
+                    <!--{{else}}-->
+                    <!--<textarea rows="5" disabled="disabled"></textarea>-->
+                    <!--{{/if}}-->
                 </fieldset>
-                <input type="file" name="notesContent" value={{item.filecontent}} disabled="{{item.contentType == 'plain'}}"/>
+                <!--<input type="file" name="notesContent" value={{item.filecontent}} disabled="{{item.contentType == 'plain'}}"/>-->
             </form>
             <div class="mwf-bottom-align">
                 <fieldset class="cta-tagpane">
