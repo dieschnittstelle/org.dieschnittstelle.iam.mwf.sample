@@ -107,8 +107,8 @@ console.log("HTTP server running at http://" + ip + ":" + port);
 
 // this might no be the most elegant solution to avoid the event emitter error message..., see http://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected
 // here, we set the credentials
-var key = fs.readFileSync('/Users/master/https.key').toString();
-var cert = fs.readFileSync('/Users/master/https.cert').toString();
+var key = fs.readFileSync("https.key").toString();
+var cert = fs.readFileSync("https.cert").toString();
 var pwd = null;
 
 if (!pwd) {
