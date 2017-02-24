@@ -47,6 +47,10 @@ define(["mwf","mwfUtils","EntityManager","entities","GenericCRUDImplLocal","Gene
                     EntityManager.initialise();
 
                     console.log("ContentTaggerApplication.oncreate(): done.");
+
+                    // include service workers
+                    this.initialiseServiceWorkers();
+
                     callback();
                 });
 
@@ -75,6 +79,24 @@ define(["mwf","mwfUtils","EntityManager","entities","GenericCRUDImplLocal","Gene
 
                     this.notifyListeners(new mwf.Event("crud","changedScope"));
                 };
+            }
+        }
+
+        initialiseServiceWorkers() {
+            console.log("initialiseServiceWorkers()");
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/js/workers/OfflineCacheServiceWorker.js')
+                    .then(function(reg) {
+                        // registration worked
+                        console.log('Service Worker Registration succeeded. Scope is ' + reg.scope);
+                    }).catch(function(error) {
+                    // registration failed
+                    console.log('Service Worker Registration failed with ' + error);
+                    mwfUtils.showToast("Service Worker could not be registered!",1500);
+                });
+            }
+            else {
+                mwfUtils.showToast("Service Workers are not supported by this browser. Offline cache will not be available.",1500);
             }
         }
 

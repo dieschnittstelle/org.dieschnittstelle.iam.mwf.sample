@@ -7,7 +7,7 @@ define(function () {
      *************/
 
 
-    function showToast(text) {
+    function showToast(text, duration) {
         console.log("showToast()");
 
         // access the toast element
@@ -16,7 +16,7 @@ define(function () {
         toast.classList.toggle("mwf-active");
         setTimeout(function () {
             toast.classList.toggle("mwf-active");
-        }, 3500);
+        }, duration || 3500);
     }
 
     /*************

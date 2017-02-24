@@ -3,8 +3,10 @@
  */
 
 var http = require('http');
+var https = require('https');
 var url = require('url');
 var fs = require('fs');
+var tls = require('tls');
 
 var utils = require("./njsimpl/njsutils");
 
@@ -12,6 +14,8 @@ var http2mdb = require("./njsimpl/http2mdb");
 
 // the HTTP server
 var server;
+// the HTTPS server
+var httpsServer;
 // the port on which the server will be started
 var port = 8383;
 // the ip address
@@ -19,9 +23,9 @@ var ip = /*"127.0.0.1";*/utils.getIPAddress();
 // the segment for identifying the rest api
 var apiref = "api";
 
-// this might no be the most elegant solution to avoid the event emitter error message..., see http://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected
 
-server = http.createServer(function(req, res) {
+// this is the application, which will be served
+var application = function(req, res) {
     var path = url.parse(req.url).pathname;
 
     console.log("onHttpRequest(): trying to serve path: " + path);
@@ -92,12 +96,29 @@ server = http.createServer(function(req, res) {
     // don't limit the amount of event listeners
     process.setMaxListeners(0);
 
-});
+};
 
+// following https://aghassi.github.io/ssl-using-express-4/
+
+// this might no be the most elegant solution to avoid the event emitter error message..., see http://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected
+// here, we set the credentials
+var key = fs.readFileSync('/Users/master/https.key').toString();
+var cert = fs.readFileSync('/Users/master/https.cert').toString();
+
+var sslOptions = {key: key, cert: cert, passphrase: "..."};
+
+// this way, i.e. creating a credentials object and passing it as sslOptions does not work! Will result in SSL_ERROR_NO_CYPHER_OVERLAP error when accessing application
+//var credentials = tls.createSecureContext(sslOptions);
+//console.log("created credentials: " + credentials);// + ", using key: " + key + ", cert: " + cert);
+server = http.createServer(application);
+httpsServer = https.createServer(sslOptions,application);
 
 // let the server listen on the given port
 server.listen(port, ip);
 console.log("HTTP server running at http://" + ip + ":" + port);
+var iphttps = "localhost"
+httpsServer.listen(port+1, iphttps);
+console.log("HTTPS server running at https://" + iphttps + ":" + (port+1));
 
 /*
  * helper methhod for assiging a Content-Type header to http responses
