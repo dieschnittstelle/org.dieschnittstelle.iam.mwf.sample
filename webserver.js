@@ -112,7 +112,7 @@ var cert = fs.readFileSync("https.cert").toString();
 var pwd = null;
 
 if (!pwd) {
-    console.error("You need to specify your local pwd for accessing the ssl certificates! Use 'NONE' if no passphrase is required.");
+    console.error("For serving the application via HTTPS you need to specify your local passphrase for accessing the SSL certificates! Use 'NONE' if no passphrase is required.");
     return;
 }
 
