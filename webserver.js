@@ -98,25 +98,32 @@ var application = function(req, res) {
 
 };
 
-// following https://aghassi.github.io/ssl-using-express-4/
+server = http.createServer(application);
+// let the server listen on the given port
+server.listen(port, ip);
+console.log("HTTP server running at http://" + ip + ":" + port);
+
+// providing https access (e.g. for testing service workers), following https://aghassi.github.io/ssl-using-express-4/
 
 // this might no be the most elegant solution to avoid the event emitter error message..., see http://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected
 // here, we set the credentials
 var key = fs.readFileSync('/Users/master/https.key').toString();
 var cert = fs.readFileSync('/Users/master/https.cert').toString();
+var pwd = null;
 
-var sslOptions = {key: key, cert: cert, passphrase: "..."};
+if (!pwd) {
+    console.error("You need to specify your local pwd for accessing the ssl certificates! Use 'NONE' if no passphrase is required.");
+    return;
+}
+
+var sslOptions = (pwd == "NONE") ? {key: key, cert: cert} : {key: key, cert: cert, passphrase: pwd};
 
 // this way, i.e. creating a credentials object and passing it as sslOptions does not work! Will result in SSL_ERROR_NO_CYPHER_OVERLAP error when accessing application
 //var credentials = tls.createSecureContext(sslOptions);
 //console.log("created credentials: " + credentials);// + ", using key: " + key + ", cert: " + cert);
-server = http.createServer(application);
 httpsServer = https.createServer(sslOptions,application);
 
-// let the server listen on the given port
-server.listen(port, ip);
-console.log("HTTP server running at http://" + ip + ":" + port);
-var iphttps = "localhost"
+var iphttps = ip;
 httpsServer.listen(port+1, iphttps);
 console.log("HTTPS server running at https://" + iphttps + ":" + (port+1));
 
