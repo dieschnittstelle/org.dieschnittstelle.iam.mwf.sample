@@ -17,7 +17,7 @@ var server;
 // the HTTPS server
 var httpsServer;
 // the port on which the server will be started
-var port = 8383;
+var port = 9784;
 // the ip address
 var ip = /*"127.0.0.1";*/utils.getIPAddress();
 // the segment for identifying the rest api
@@ -109,7 +109,7 @@ console.log("HTTP server running at http://" + ip + ":" + port);
 // here, we set the credentials
 var key = fs.readFileSync("https.key").toString();
 var cert = fs.readFileSync("https.cert").toString();
-var pwd = null;
+var pwd = "master";
 
 if (!pwd) {
     console.error("For serving the application via HTTPS you need to specify your local passphrase for accessing the SSL certificates! Use 'NONE' if no passphrase is required.");
