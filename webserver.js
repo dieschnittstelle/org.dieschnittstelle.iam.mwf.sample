@@ -1,5 +1,5 @@
 /*
- * taken from http://jmesnil.net/weblog/2010/11/24/html5-web-application-for-iphone-and-ipad-with-node-js/
+ * originally taken from http://jmesnil.net/weblog/2010/11/24/html5-web-application-for-iphone-and-ipad-with-node-js/
  */
 
 var http = require('http');
@@ -37,7 +37,7 @@ var localPassphrase = null;
 var multitenantsEnabled = false;
 
 if (multitenantsEnabled) {
-    console.log("\nSERVER RUNNING IN MULTITENANTS MODE\n");
+    console.log("\nSERVER RUNNING IN MULTITENANTS MODE -- PLACE TENANTS' APPLICATIONS IN www/<tenant-id> DIRECTORIES AND EDIT njsimpl/tenants.json\n");
 }
 
 /****************************************************************************
@@ -179,6 +179,7 @@ function handleRequest(req,res,path,tenant) {
 }
 
 function serveUploadedContent(req,res,path,tenant) {
+    console.log((tenant ? tenant.name : "") + ".onHttpRequest(): serve uploaded content: " + path);
     doServeStaticResource(req,res,path,tenant);
 }
 

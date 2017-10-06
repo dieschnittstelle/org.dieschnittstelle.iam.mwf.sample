@@ -239,7 +239,7 @@
                     <legend>
                         Titel
                     </legend>
-                    <input class="mwf-autofocus" value="{{item.name}}" type="text" name="name" placeholder="..."
+                    <input class="mwf-autofocus" value="{{item.name}}" type="text" name="name"
                            required="required" autocomplete="off"/>
                 </fieldset>
                 <!-- remove the local/upload option from the view for the time being -->
@@ -249,6 +249,9 @@
                 <!--</fieldset>-->
                 <p></p>
                 <fieldset>
+                    <legend>
+                        Beschreibung
+                    </legend>
                     <!--{{#if item.contentType == 'plain'}}-->
                     <!-- textarea must not be realised as an empty tag -->
                     <textarea rows="5" value="{{item.content}}"></textarea>

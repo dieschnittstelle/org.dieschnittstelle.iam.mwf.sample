@@ -58,7 +58,7 @@ header {
     height: 40px;
 }
 
-header h2 {
+header h2, header h1 {
     display: inline-block;
     margin: 0px;
     font-size: 16pt;
@@ -71,20 +71,21 @@ header h2 {
 }
 
 /* by default, dialog-body is dealt with like the body of a normal view */
-.mwf-dialog-body {
+.mwf-dialog main, .mwf-dialog-body {
     height: 100%;
     font-size: 16pt;
     opacity: 1.0
 }
 
 /* this is for dialogs that display some message */
-.mwf-dialog-body > p {
+.mwf-dialog main > p, .mwf-dialog-body > p {
     margin-left: 10px;
     margin-right: 10px;
     color: black;
 }
 
-.mwf-body {
+/* this needs to be restricted to 'normal' views, not dialogs */
+.mwf-body, .mwf-view main {
     background-color: rgb(45,45,45);
     height: calc(100% - (40px + 40px));
     height: -webkit-calc(100% - (40px + 40px));
@@ -627,7 +628,6 @@ li input {
     background-color: rgb(70,70,70);
     width: 0px;
     transition: width 0.1s;
-    text-wrap: none;
 }
 
 .mwf-actionmenu li.mwf-li-singletitle {
@@ -680,7 +680,6 @@ li input {
     padding: 0px;
     background-color: rgb(70,70,70);
     opacity: 1.0;
-    text-wrap: none;
 }
 
 .mwf-dialog.mwf-listitem-menu h2 {
@@ -706,7 +705,6 @@ li input {
 
 .mwf-map-popup-content {
     color: black;
-    font-size: large;
 }
 
 body.mwf-loading-app {
@@ -721,7 +719,7 @@ body.mwf-loading-app {
 
 /* enforce text ellipsis in headings */
 
-.mwf-view h2.mwf-dyncontent, .mwf-dialog h2.mwf-dyncontent {
+.mwf-view h2.mwf-dyncontent, .mwf-view h1.mwf-dyncontent, .mwf-dialog h2.mwf-dyncontent {
     display: inline-block;
     max-width: 80%;
     white-space: nowrap;
@@ -729,7 +727,97 @@ body.mwf-loading-app {
     text-overflow: ellipsis;
 }
 
-.mwf-view header h2.mwf-dyncontent  {
+.mwf-view header h2.mwf-dyncontent, .mwf-view header h1.mwf-dyncontent {
     max-width: 50%;
+}
+
+/* support material-style input labels for fieldset and legend */
+
+fieldset.mwf-material {
+    height: 40px;
+    border: none;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+fieldset.mwf-material legend {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 3px;
+    opacity: 0.5;
+    font-size: 12pt;
+    z-index: 1;
+    transition: font-size 0.5s, color 0.5s, bottom 0.5s;
+}
+
+fieldset.mwf-material.mwf-material-filled legend {
+    bottom: 25px;
+    font-size: 10pt;
+    color: limegreen;
+}
+
+/* the following rules handle the case that the browser marks elements as invalid even before any submit event has occurred */
+
+/* fieldset and legend valid */
+fieldset.mwf-material.mwf-material-filled.mwf-material-valid:invalid legend, fieldset.mwf-material.mwf-material-filled.mwf-material-valid legend {
+    color: limegreen;
+    opacity: 0.5;
+}
+
+fieldset.mwf-material.mwf-material-filled.mwf-material-valid:invalid legend .mwf-material-feedback, fieldset.mwf-material.mwf-material-filled.mwf-material-valid legend .mwf-material-feedback, fieldset.mwf-material legend .mwf-material-feedback {
+    opacity: 0.0;
+}
+
+fieldset.mwf-material legend .mwf-material-feedback:before {
+    content: ":";
+    padding-right: 2px;
+}
+
+
+/* fieldset and legend invalid */
+
+fieldset.mwf-material.mwf-material-filled:invalid legend {
+    color: red;
+    opacity: 1.0;
+    transition: opacity 0.5s;
+}
+
+fieldset.mwf-material.mwf-material-filled:invalid legend .mwf-material-feedback {
+    opacity: 1.0;
+    color: red;
+}
+
+/* input in fieldset */
+
+fieldset.mwf-material input, fieldset.mwf-material textarea {
+    position: absolute;
+    left: 10px;
+    bottom: 0px;
+    background-color: transparent;
+    z-index: 2;
+    width: calc(100% - 20px)
+}
+
+/* increate the height of the textarea beyong the height of the containing fieldset */
+fieldset.mwf-material textarea {
+    top: 5px;
+    height: 100px
+}
+
+
+/* skip outlines - this seems to be ignored by FF */
+fieldset.mwf-material input:focus, fieldset.mwf-material input:invalid, fieldset.mwf-material input:invalid:focus, fieldset.mwf-material textarea:focus {
+    outline: none;
+}
+
+/* input validity */
+
+fieldset.mwf-material input:invalid {
+    border-bottom-color: red;
+}
+
+fieldset.mwf-material input.mwf-material-valid:invalid {
+    border-bottom-color: limegreen;
 }
 

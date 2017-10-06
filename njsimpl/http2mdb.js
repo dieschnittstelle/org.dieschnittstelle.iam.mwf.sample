@@ -7,26 +7,28 @@ module.exports = {
     CRUDImpl: CRUDImpl
 }
 
+
+var mdbhost = "localhost";
+var mdbport = 27017;
+
 /*
  * initialise the access to the mdb
  */
 function CRUDImpl(tenant) {
     // determine the databaseUrl escaping characters if necessary
-    var databaseUrl = encodeURIComponent(tenant ? tenant.name : "mwfdb");
+    var databaseUrl = "mongodb://" + mdbhost + ":" + mdbport + "/" + encodeURIComponent(tenant ? tenant.name : "mwfdb");
     var databaseLogPrefix = tenant ? tenant.name : "";
 
     // use our own utility functions
     var utils = require("./njsutils");
 
-    // instantiate a connection to the db
-    var db = require("mdbjs").connect(databaseUrl);
+    var mdbclient = require('mongodb').MongoClient;
+    console.log(databaseLogPrefix + ".CRUDImpl(): got mdbclient");
 
     /* MFM: import the components required for multipart request ("file upload") processing
      the class must be imported like this, otherwise its instances will not keep their state */
     var MultipartReader = require("./multipart").MultipartReader;
     var multipart = require("./multipart");
-
-    console.log(databaseLogPrefix + ".CRUDImpl(): got db: " + db);
 
     /*
      * an object type that represents the information contained in a uri and provides it via the attributes collection, objectid and furtherpath (the latter will not be used here)
@@ -42,7 +44,7 @@ function CRUDImpl(tenant) {
         }
         if (segments.length > 1 && segments[1].length > 0) {
             try {
-                this.objectid = require("mdbjs").ObjectId(segments[1]);
+                this.objectid = require("mongodb").ObjectId(segments[1]);
             } catch (exception) {
                 console.log(databaseLogPrefix + ".MDBRequest(): got exception: " + exception + ". This might be due to using an _id that has been assigned remotely: " + segments[1]);
                 this.objectid = segments[1];//parseInt(segments[1]);
@@ -58,78 +60,102 @@ function CRUDImpl(tenant) {
 
     this.processRequest = function(req, res, apiref) {
 
-        console.log(databaseLogPrefix + ".processRequest(): req: " + req);
-        console.log(databaseLogPrefix + ".processRequest(): req.method: " + req.method);
-        console.log(databaseLogPrefix + ".processRequest(): req.url: " + req.url);
-        console.log(databaseLogPrefix + ".processRequest(): req header user-agent: " + req.headers["user-agent"]);
-        console.log(databaseLogPrefix + ".processRequest(): req header host: " + req.headers["host"]);
+        // we first need to create a connection to the db
+        console.log(databaseLogPrefix + ".processRequest(): create db connection to: " + databaseUrl);
 
-        // we truncate the url
-        var uri = utils.substringAfter(req.url, "/" + apiref + "/");
+        mdbclient.connect(databaseUrl, function(err, db) {
 
-        // we assume the rest of the url specifies the collection and possibly object to be accessed and wrap this information in a special type of object
-        var mdbrequest = new MDBRequest(uri);
+            if (err) {
+                console.error(databaseLogPrefix + ".processRequest(): cannot access database: " + err);
+                res.writeHead(500);
+                res.end();
+                return;
+            }
 
-        // load the collection
-        var collection = db.collection(mdbrequest.collection);
+            console.log(databaseLogPrefix + ".processRequest(): got db: " + db);
 
-        if (collection) {
-            if (req.method == "GET") {
-                if (mdbrequest.objectid) {
-                    readObject(collection, mdbrequest.objectid, req, res);
+            console.log(databaseLogPrefix + ".processRequest(): req: " + req);
+            console.log(databaseLogPrefix + ".processRequest(): req.method: " + req.method);
+            console.log(databaseLogPrefix + ".processRequest(): req.url: " + req.url);
+            console.log(databaseLogPrefix + ".processRequest(): req header user-agent: " + req.headers["user-agent"]);
+            console.log(databaseLogPrefix + ".processRequest(): req header host: " + req.headers["host"]);
+
+            // we truncate the url
+            var uri = utils.substringAfter(req.url, "/" + apiref + "/");
+
+            // we assume the rest of the url specifies the collection and possibly object to be accessed and wrap this information in a special type of object
+            var mdbrequest = new MDBRequest(uri);
+
+            // load the collection
+            var collection = db.collection(mdbrequest.collection);
+
+            console.log(databaseLogPrefix + ".processRequest(): collection from db: " + collection);
+
+            if (collection) {
+                if (req.method == "GET") {
+                    if (mdbrequest.objectid) {
+                        readObject(collection, mdbrequest.objectid, req, res, db);
+                    } else {
+                        readAllObjects(collection, req, res, db);
+                    }
+                } else if (req.method == "POST") {
+                    // MFM: check whether we have a multipart request
+                    if (utils.startsWith(req.headers["content-type"], "multipart/form-data;")) {
+                        handleMultipartRequest(uri, req, res);
+                        // on dealing with multipart requests, we close the connection immediately
+                        db.close();
+                    }
+                    else {
+                        createObject(collection, req, res, db);
+                    }
+                } else if (req.method == "PUT") {
+                    updateObject(collection, mdbrequest.objectid, req, res, db);
+                } else if (req.method == "DELETE") {
+                    deleteObject(collection, mdbrequest.objectid, req, res, db);
                 } else {
-                    readAllObjects(collection, req, res);
+                    db.close();
+                    console.error(databaseLogPrefix + ".processRequest(): cannot handle request method: " + req.method);
+                    res.writeHead(405);
+                    res.end();
                 }
-            } else if (req.method == "POST") {
-                // MFM: check whether we have a multipart request
-                if (utils.startsWith(req.headers["content-type"], "multipart/form-data;")) {
-                    handleMultipartRequest(uri, req, res);
-                }
-                else {
-                    createObject(collection, req, res);
-                }
-            } else if (req.method == "PUT") {
-                updateObject(collection, mdbrequest.objectid, req, res);
-            } else if (req.method == "DELETE") {
-                deleteObject(collection, mdbrequest.objectid, req, res);
             } else {
-                console.error(databaseLogPrefix + ".processRequest(): cannot handle request method: " + req.method);
-                res.writeHead(405);
+                db.close();
+                console.error(databaseLogPrefix + ".processRequest(): request does not seem to specifiy a collection: " + uri + "!");
+                res.writeHead(400);
                 res.end();
             }
-        } else {
-            console.error(databaseLogPrefix + ".processRequest(): request does not seem to specifiy a collection: " + uri + "!");
-            res.writeHead(400);
-            res.end();
-        }
+
+        });
     }
 
     /*
      * read a single object
      */
-    function readObject(collection, objectid, req, res) {
+    function readObject(collection, objectid, req, res, db) {
         console.log(databaseLogPrefix + ".readObject(): " + objectid);
 
-        collection.find({
+        collection.findOne({
             _id: objectid
-        }, function (err, elements) {
-            if (err || !elements) {
+        }, function (err, element) {
+            db.close();
+            if (err) {
                 console.log(databaseLogPrefix + ".readObject(): Error accessing collection! " + err ? err : "");
                 respondError(res);
-            } else if (elements.length == 0) {
+            } else if (!element) {
                 console.error(databaseLogPrefix + ".readObject(): the element with id " + objectid + " could not be found inside of the collection.");
                 respondError(res, 404);
             } else {
-                console.log(databaseLogPrefix + ".readObject(): found " + elements.length + " elements.");
-                respondSuccess(res, elements[0]);
+                console.log(databaseLogPrefix + ".readObject(): found element: " + element);
+                respondSuccess(res, element);
             }
         });
     }
 
-    function readAllObjects(collection, req, res) {
+    function readAllObjects(collection, req, res, db) {
         console.log(databaseLogPrefix + ".readAllObjects()");
 
-        collection.find(function (err, elements) {
+        collection.find({}).toArray(function (err, elements) {
+            db.close();
             if (err || !elements) {
                 console.log(databaseLogPrefix + ".readAllObjects(): Error accessing collection: " + err + "!");
                 respondError(res);
@@ -140,7 +166,7 @@ function CRUDImpl(tenant) {
         });
     }
 
-    function createObject(collection, req, res) {
+    function createObject(collection, req, res, db) {
         console.log(databaseLogPrefix + ".createObject()");
 
         // we read out the data from the request and then update the db with the data being passed
@@ -156,25 +182,27 @@ function CRUDImpl(tenant) {
             // parse the data
             var parseddata = JSON.parse(alldata);
             // and save it to the collection
-            collection.save(parseddata, function (err, saved) {
-                if (err || !saved) {
+            collection.insertOne(parseddata, function (err, result) {
+                db.close();
+                if (err || !result) {
                     console.error(databaseLogPrefix + ".object data could not be saved: " + err);
                     respondError(res);
                 } else {
-                    console.log(databaseLogPrefix + ".createObject(): saved object is: " + JSON.stringify(saved));
-                    // and respond
-                    respondSuccess(res, saved);
+                    console.log(databaseLogPrefix + ".createObject(): saved object id is: " + result.insertedId);
+                    parseddata._id = result.insertedId;
+                    respondSuccess(res, parseddata);
                 }
             })
         });
     }
 
-    function deleteObject(collection, objectid, req, res) {
+    function deleteObject(collection, objectid, req, res, db) {
         console.log(databaseLogPrefix + ".deleteObject(): " + objectid);
 
-        collection.remove({
+        collection.deleteOne({
             _id: objectid
         }, function (err, update) {
+            db.close();
             if (err || !update) {
                 console.log(databaseLogPrefix + ".deleteObject(): object " + objectid + " could not be deleted. Got: " + err);
                 respondError(res);
@@ -185,7 +213,7 @@ function CRUDImpl(tenant) {
         });
     }
 
-    function updateObject(collection, objectid, req, res) {
+    function updateObject(collection, objectid, req, res, db) {
         console.log(databaseLogPrefix + ".updateObject(): " + objectid);
 
         // we read out the data from the request and then update the db with the data being passed
@@ -200,11 +228,12 @@ function CRUDImpl(tenant) {
             // parse the data
             var parseddata = JSON.parse(alldata);
             // and update it to the collection - note that we can directly pass the data received to the update function
-            collection.update({
+            collection.updateOne({
                 _id: objectid
             }, {
                 $set: parseddata
             }, function (err, updated) {
+                db.close();
                 if (err || !updated) {
                     console.error(databaseLogPrefix + ".updateObject(): object data could not be updated: " + err);
                     respondError(res);
