@@ -1,0 +1,25 @@
+{
+  "short_name": "MY MWF APP",
+  "name": "MY MWF Application Skeleton",
+  /* icons generated using https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html */
+  "icons": [
+    {
+      "src": "mipmap-xhdpi/launcher-icon.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "mipmap-xxhdpi/launcher-icon.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "mipmap-xxxhdpi/launcher-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "../app.html",
+  "display": "standalone",
+  "orientation": "portrait"
+}
