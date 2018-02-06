@@ -29,7 +29,7 @@ var apiref = "api";
  * adaptable settings
  ****************************************************************************/
 // set this variable to true for testing service workers and progressive webapp manifest without http on localhost
-var localtest = false;
+var localtest = true;
 if (localtest) {
     ip = "127.0.0.1";
 }
