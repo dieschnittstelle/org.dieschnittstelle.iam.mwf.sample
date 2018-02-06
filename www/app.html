@@ -21,7 +21,7 @@
     <!-- user require.js for local script loading -->
     <script data-main="js/Main.js" src="lib/js/external/require.js"></script>
 </head>
-<body class="cta-layout-light" data-mwf-application="ContentTaggerApplication">
+<body class="cta-layout-light mwf-loading-app" data-mwf-application="ContentTaggerApplication">
 <!-- onload="onloadApplication()"> -->
 
 <!-------------
@@ -85,7 +85,7 @@
     <header>
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
-        <h2 class="mwf-left-align">Tags</h2>
+        <h2 class="mwf-left-align mwf-right-fill">Tags</h2>
         <button id="newTagAction" class="mwf-right-align mwf-imgbutton mwf-img-plus">
         </button>
     </header>
@@ -93,7 +93,7 @@
         <ul class="mwf-scrollview mwf-listview" data-mwf-listitem-view="listitem-tags-overview">
             <li class="mwf-listitem mwf-li-singletitle mwf-template mwf-databind"
                 data-mwf-templatename="listitem-tags-overview" data-mwf-targetaction="showTag">
-                <h2 class="mwf-left-align mwf-li-titleblock">#{{name}}</h2>
+                <h2 class="mwf-left-align mwf-li-titleblock mwf-right-fill">#{{name}}</h2>
 
                 <div class="mwf-right-align mwf-imgbutton mwf-img-pencil mwf-listitem-menu-control"></div>
             </li>
@@ -119,7 +119,7 @@
         </div>
     </div>
     <footer>
-        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope">
+        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope mwf-right-fill">
         </button>
         <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
         </button>
@@ -164,7 +164,7 @@
                 <ul class="mwf-listview">
                     {{#each contentItems:citem}}
                     <li on-click="showContentItem" class="mwf-listitem mwf-li-singletitle" data-mwf-id="{{contentItems[citem]._id}}@{{type}}">
-                        <h2 class="mwf-dyncontent mwf-left-align mwf-li-titleblock">{{contentItems[citem].name}}</h2>
+                        <h2 class="mwf-dyncontent mwf-left-align mwf-li-titleblock mwf-right-fill">{{contentItems[citem].name}}</h2>
                         <div class="mwf-right-align mwf-imgbutton mwf-img-options-vertical"></div>
                     </li>
                     {{/each}}
@@ -173,7 +173,7 @@
             </div>
         </div>
         <footer>
-            <button class="mwf-back mwf-imgbutton mwf-img-backward mwf-left-align">
+            <button class="mwf-back mwf-imgbutton mwf-img-backward mwf-left-align mwf-right-fill">
             </button>
             <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
             </button>
@@ -189,21 +189,21 @@
     <header>
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
-        <h2 class="mwf-left-align">Notizen</h2>
+        <h2 class="mwf-left-align  mwf-right-fill">Notizen</h2>
         <button id="newNoteAction" class="mwf-right-align mwf-imgbutton mwf-img-plus">
         </button>
     </header>
     <div class="mwf-body">
         <ul class="mwf-listview mwf-scrollview" data-mwf-listitem-view="listitem-notes-overview" data-mwf-listitem-menu="notesItemMenu">
             <li class="mwf-listitem mwf-li-title-subtitle mwf-template mwf-databind" data-mwf-targetview="notesReadview" data-mwf-templatename="listitem-notes-overview">
-                <div class="mwf-left-align mwf-li-titleblock mwf-dyncontent"><h2>{{name}}</h2>
+                <div class="mwf-left-align mwf-li-titleblock mwf-dyncontent  mwf-right-fill"><h2>{{name}}</h2>
                     <h3>{{lastModifiedDateString}} {{lastModifiedTimeString}}</h3></div>
                 <div class="mwf-right-align mwf-imgbutton mwf-img-options-vertical mwf-listitem-menu-control"></div>
             </li>
         </ul>
     </div>
     <footer>
-        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope">
+        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope  mwf-right-fill">
         </button>
         <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
         </button>
@@ -227,11 +227,10 @@
         <header>
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
-            <h2 class="mwf-dyncontent mwf-left-align">{{#if item.created}}Editieren: {{item.name}}{{else}}Neue Notiz{{/if}}</h2>
-            <!-- right-aligned items must be added in reverse order -->
-            <input type="submit" value="Speichern" form="notesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>
-            <button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>
+            <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}Editieren: {{item.name}}{{else}}Neue Notiz{{/if}}</h2>
             <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
+            <button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>
+            <input type="submit" value="Speichern" form="notesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>
         </header>
         <div class="mwf-body">
             <form id="notesEditForm" on-submit="submitNoteForm">
@@ -266,14 +265,14 @@
                     <ul>
                         {{#each item.tags}}
                         <!-- note that the iterator "tag" will not be used as prefix inside of the iteration (vs., e.g., JSF)!!! -->
-                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align" on-click="removeTag"></span></li>
+                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align-float" on-click="removeTag"></span></li>
                         {{/each}}
                     </ul>
                 </fieldset>
             </div>
         </div>
         <footer>
-            <button class="mwf-back mwf-imgbutton mwf-img-backward mwf-left-align">
+            <button class="mwf-back mwf-imgbutton mwf-img-backward mwf-left-align  mwf-right-fill">
             </button>
             <button class="mwf-right-align mwf-back mwf-imgbutton mwf-img-paste" on-click="pasteDefaultContent">
             </button>
@@ -287,9 +286,9 @@
         <header>
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
-            <h2 class="mwf-dyncontent mwf-left-align">{{item.name}}</h2>
-            <button class="mwf-right-align mwf-imgbutton mwf-img-pencil" on-click="editNote"></button>
+            <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{item.name}}</h2>
             <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
+            <button class="mwf-right-align mwf-imgbutton mwf-img-pencil" on-click="editNote"></button>
         </header>
         <div class="mwf-body">
             <div class="mwf-scrollview">
@@ -323,21 +322,21 @@
     <header>
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
-        <h2 class="mwf-left-align">Orte</h2>
+        <h2 class="mwf-left-align  mwf-right-fill">Orte</h2>
         <button id="newPlaceAction" class="mwf-right-align mwf-imgbutton mwf-img-plus">
         </button>
     </header>
     <div class="mwf-body">
         <ul class="mwf-listview mwf-scrollview" data-mwf-listitem-view="listitem-places-overview" data-mwf-listitem-menu="placesItemMenu">
             <li class="mwf-listitem mwf-li-singletitle mwf-template mwf-databind" data-mwf-targetview="placesEditview" data-mwf-templatename="listitem-places-overview">
-                <div class="mwf-left-align mwf-li-titleblock mwf-dyncontent"><h2>{{name}}</h2>
+                <div class="mwf-left-align mwf-li-titleblock mwf-dyncontent  mwf-right-fill"><h2>{{name}}</h2>
                 </div>
                 <div class="mwf-right-align mwf-imgbutton mwf-img-options-vertical mwf-listitem-menu-control"></div>
             </li>
         </ul>
     </div>
     <footer>
-        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope">
+        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope  mwf-right-fill">
         </button>
         <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
         </button>
@@ -361,12 +360,11 @@
         <header>
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
-            <h2 class="mwf-dyncontent mwf-left-align">{{#if item.created}}{{#if mode == 'edit'}}Editieren: {{/if}}{{item.name}}{{else}}Neuer Ort{{/if}}</h2>
-            <!-- right-aligned items must be added in reverse order -->
-            {{#if mode == 'edit'}}<input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>{{/if}}
-            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
-            {{#unless mode == 'edit'}}<button class="mwf-imgbutton mwf-img-pencil mwf-right-align" data-mwf-id="editPlaceAction" on-click="setEditMode"></button>{{/unless}}
+            <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}{{#if mode == 'edit'}}Editieren: {{/if}}{{item.name}}{{else}}Neuer Ort{{/if}}</h2>
             <button class="mwf-imgbutton mwf-img-delete mwf-right-align" data-mwf-id="deletePlaceAction"></button>
+            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
+            {{#if mode == 'edit'}}<input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>{{/if}}
+            {{#unless mode == 'edit'}}<button class="mwf-imgbutton mwf-img-pencil mwf-right-align" data-mwf-id="editPlaceAction" on-click="setEditMode"></button>{{/unless}}
         </header>
         <div class="mwf-body">
             <!-- the map must not be placed inside of the form! -->
@@ -386,7 +384,7 @@
                     <ul>
                         {{#each item.tags}}
                         <!-- note that the iterator "tag" will not be used as prefix inside of the iteration (vs., e.g., JSF)!!! -->
-                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}{{#if mode == 'edit'}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align" on-click="removeTag"></span>{{/if}}</li>
+                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}{{#if mode == 'edit'}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align-float" on-click="removeTag"></span>{{/if}}</li>
                         {{/each}}
                     </ul>
                 </fieldset>

@@ -190,13 +190,56 @@ header button, footer button, header input[type=submit], footer[type=submit] {
     height: 100%;
 }
 
+/* these are new alignment rules using flexbox rather than float - note that if a row contains both left-aligned and right-aligned elements, then the last left-aligned element must be declared as mwf-right-fill. For h1 in headers, we set this property by default */
+/* add mwf-alignbox for setting alignment environments manually */
+
+header, footer, li, .mwf-alignbox {
+    display: flex;
+    /*justify-content: space-between;*/
+}
+
+header h1 {
+    margin-right: auto;
+}
+
 .mwf-left-align {
-    float: left;
+    /*float: left;*/
+    justify-content: flex-start;
 }
 
 .mwf-right-align {
+    /*float: right;*/
+    justify-content: flex-end;
+}
+
+.mwf-right-align:first-child {
+    margin-left: auto;
+}
+
+.mwf-right-fill {
+    margin-right: auto;
+}
+
+.mwf-left-fill {
+    margin-left: auto;
+}
+
+/* end of flex box based alignment */
+
+/* these classes allow to realise alignment with floating */
+.mwf-alignbox-inline {
+    display: inline-flex;
+}
+
+.mwf-left-align-float {
+    float: left;
+}
+
+.mwf-right-align-float {
     float: right;
 }
+
+/* end of float based alignment */
 
 .mwf-bottom-align {
     position: absolute;
@@ -332,6 +375,7 @@ header button, footer button, header input[type=submit], footer[type=submit] {
 
 .mwf-buttonbar {
     width: 100%;
+    display: inline-flex;
 }
 
 .mwf-buttonbar:first-of-type {
@@ -507,7 +551,11 @@ li.mwf-li-singletitle .mwf-imgbutton, li.mwf-li-title-subtitle .mwf-imgbutton, l
     display: inline-block;
     font-size: 16pt;
     font-weight: normal;
-    margin: 0px;
+    /*the left and right margins may conflict with flexbox alignment */
+    /*margin-left: 0px;*/
+    /*margin-right: 0px;*/
+    margin-top: 0px;
+    margin-bottom: 0px;
     max-width: calc(100% - 100px);
     max-width: -webkit-calc(100% - 100px);
     overflow: hidden;
@@ -799,9 +847,9 @@ fieldset.mwf-material input, fieldset.mwf-material textarea {
     width: calc(100% - 20px)
 }
 
-/* increate the height of the textarea beyong the height of the containing fieldset */
+/* increase the height of the textarea beyond the height of the containing fieldset */
 fieldset.mwf-material textarea {
-    top: 5px;
+    top: 10px;
     height: 100px
 }
 
@@ -821,3 +869,32 @@ fieldset.mwf-material input.mwf-material-valid:invalid {
     border-bottom-color: limegreen;
 }
 
+/* we allow to place buttons for alternative input (e.g. image picker) on text elements - solution foresees three elements:
+ * 1) the (text) input elment that will be marked as mwf-material-altinput-target
+ * 2) the alternative input element that will be marked as mwf-material-altinput (which will result in the element being hidden)
+ * 3) a label also marked as mwf-material-altinput which will be placed on top of the mwf-material-altinput-target
+ */
+fieldset.mwf-material input.mwf-material-altinput-target {
+    padding-right: 50px;
+    width: calc(100% - 70px);
+    text-overflow: ellipsis;
+}
+
+fieldset.mwf-material input.mwf-material-altinput {
+    opacity: 0.0;
+    height: 0px;
+    width: 0px;
+}
+
+fieldset.mwf-material label.mwf-material-altinput {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: 3;
+}
+
+/* this is necessary for avoiding the autofill marking in chrome - note that we set the default color for the main element */
+fieldset.mwf-material input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0 30px rgb(45,45,45) inset;
+}

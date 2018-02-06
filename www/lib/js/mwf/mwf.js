@@ -1091,12 +1091,15 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
                 console.log("processMaterialElements(): view uses material elements...");
 
                 // check whether we have mwf-material fieldset elements which need to be supported by setting oninput event handlers
+                // JK 180205: also handle alternative input
                 this.root.querySelectorAll("fieldset.mwf-material").forEach((fs) => {
                     console.log("processMaterialElements(): postprocessing material element: " + fs);
                     // we directly set the listener rather than using addEventListener()
                     var inputel = fs.querySelector("input, textarea");
                     if (inputel) {
+                        var lastvalue = null;
                         fs.oninput = () => {
+                            console.log("oninput()");
                             // always add mwf-valid oninput
                             fs.classList.add("mwf-material-valid");
                             if (inputel.value && inputel.value.length > 0) {
@@ -1104,6 +1107,32 @@ define(["mwfUtils", "eventhandling", "EntityManager"], function (mwfUtils, event
                             }
                             else {
                                 fs.classList.remove("mwf-material-filled");
+                            }
+                            lastvalue = inputel.value;
+                        }
+                        // if the input can be provided alternatively, we also add an onchange listener
+                        if (inputel.classList.contains("mwf-material-altinput-target")) {
+                            // we add the same listener to onchange
+                            fs.onchange = (evt) => {
+                                console.log("onchange()");
+                                // always add mwf-valid oninput
+                                fs.classList.add("mwf-material-valid");
+                                if (inputel.value && inputel.value.length > 0) {
+                                    fs.classList.add("mwf-material-filled");
+                                }
+                                else {
+                                    fs.classList.remove("mwf-material-filled");
+                                }
+                                // check whether the lastvalue obtained by input is identical with the current value, otherwise input must have been provided alternatively
+                                // this is for providing the "srcType" information previously added by radio buttons in a generalised way
+                                if (lastvalue == inputel.value) {
+                                    console.log("input provided by input!");
+                                    inputel.classList.remove("mwf-material-filled-altinput");
+                                }
+                                else {
+                                    console.log("input provided by altinput!");
+                                    inputel.classList.add("mwf-material-filled-altinput");
+                                }
                             }
                         }
                         // if the input is not empty, we need to set the field to filled
