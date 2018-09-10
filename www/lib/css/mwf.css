@@ -184,6 +184,47 @@ button.mwf-touched {
     opacity: 0.5;
 }
 
+/* rules for floating action buttons */
+
+.mwf-fab {
+    background-color: limegreen;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+}
+
+.mwf-fab .mwf-imgbutton {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.mwf-fabcontainer {
+    position: relative;
+}
+
+.mwf-fab input {
+    height: 40px;
+    width: 40px;
+}
+
+/* in case there are problems with scrolling, we may also fix the fab */
+.mwf-fab.mwf-fab-fixed-main {
+    position: fixed;
+    bottom: 45px;
+    right: 5px;
+}
+
+.mwf-fab.mwf-fab-fixed-view {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+}
+
+/* end of fab handling */
+
 /* format header and footer buttons */
 header button, footer button, header input[type=submit], footer[type=submit] {
     width: auto;

@@ -88,10 +88,8 @@
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
         <h2 class="mwf-left-align mwf-right-fill">Tags</h2>
-        <button id="newTagAction" class="mwf-right-align mwf-imgbutton mwf-img-plus">
-        </button>
     </header>
-    <div class="mwf-body">
+    <main class="mwf-fabcontainer">
         <ul class="mwf-scrollview mwf-listview" data-mwf-listitem-view="listitem-tags-overview">
             <li class="mwf-listitem mwf-li-singletitle mwf-template mwf-databind"
                 data-mwf-templatename="listitem-tags-overview" data-mwf-targetaction="showTag">
@@ -100,7 +98,11 @@
                 <div class="mwf-right-align mwf-imgbutton mwf-img-pencil mwf-listitem-menu-control"></div>
             </li>
         </ul>
-    </div>
+        <div class="mwf-fab">
+            <button id="newTagAction" class="mwf-imgbutton mwf-img-plus">
+            </button>
+        </div>
+    </main>
     <div class="mwf-dialog mwf-popup mwf-template mwf-databind" data-mwf-templatename="editTagDialog">
         <div class="mwf-dialog-body">
             <h2>{{#if created}}Tag ändern{{else}}Neuer Tag{{/if}}</h2>
@@ -192,10 +194,8 @@
         <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
         </button>
         <h2 class="mwf-left-align  mwf-right-fill">Notizen</h2>
-        <button id="newNoteAction" class="mwf-right-align mwf-imgbutton mwf-img-plus">
-        </button>
     </header>
-    <div class="mwf-body">
+    <div class="mwf-body mwf-fabcontainer">
         <ul class="mwf-listview mwf-scrollview" data-mwf-listitem-view="listitem-notes-overview" data-mwf-listitem-menu="notesItemMenu">
             <li class="mwf-listitem mwf-li-title-subtitle mwf-template mwf-databind" data-mwf-targetview="notesReadview" data-mwf-templatename="listitem-notes-overview">
                 <div class="mwf-left-align mwf-li-titleblock mwf-dyncontent  mwf-right-fill"><h2>{{name}}</h2>
@@ -203,6 +203,10 @@
                 <div class="mwf-right-align mwf-imgbutton mwf-img-options-vertical mwf-listitem-menu-control"></div>
             </li>
         </ul>
+        <div class="mwf-fab mwf-fab-fixed-main">
+            <button id="newNoteAction" class="mwf-imgbutton mwf-img-plus">
+            </button>
+        </div>
     </div>
     <footer>
         <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope  mwf-right-fill">
@@ -232,9 +236,8 @@
             <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}Editieren: {{item.name}}{{else}}Neue Notiz{{/if}}</h2>
             <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
             <button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>
-            <input type="submit" value="Speichern" form="notesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>
         </header>
-        <div class="mwf-body">
+        <div class="mwf-body mwf-fabcontainer">
             <form id="notesEditForm" on-submit="submitNoteForm">
                 <fieldset>
                     <legend>
@@ -271,6 +274,9 @@
                         {{/each}}
                     </ul>
                 </fieldset>
+            </div>
+            <div class="mwf-fab">
+                <input type="submit" value="Speichern" form="notesEditForm" class="mwf-imgbutton mwf-img-disk"/>
             </div>
         </div>
         <footer>
