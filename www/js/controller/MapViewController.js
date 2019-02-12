@@ -7,7 +7,7 @@
 import * as mwf from "../../lib/js/mwf/mwf.js";
 import * as entities from "../model/Entities.js";
 import * as mwfUtils from "../../lib/js/mwf/mwfUtils.js";
-import * as mapHolder from "../../lib/js/mwf/controller/mwfMapHolderLeaflet.js";
+import mapHolder from "../../lib/js/mwf/controller/mwfMapHolderLeaflet.js";
 
 
 export default class MapViewController extends mwf.ViewController {
