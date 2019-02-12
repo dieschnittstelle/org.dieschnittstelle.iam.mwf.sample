@@ -736,9 +736,6 @@ function ManagedEntitiesArray(params) {
     }
 
     function lookupEntitypos(obj) {
-        // if (!obj) {
-        //     return -1;
-        // }
         var i;
         for (i = 0; i < entityobjs.length; i++) {
             if (entityobjs[i]._id == obj._id) {
