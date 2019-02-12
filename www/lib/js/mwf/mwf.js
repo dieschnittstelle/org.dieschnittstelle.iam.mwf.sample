@@ -731,7 +731,7 @@ class ViewController {
                     }
                     // we invoke the itemMenuItemSelected function which will also be called when selecting an action from the action menu
                     else if (eventData.eventType == "itemActionSelected") {
-                        this.onListItemMenuItemSelected(eventData.listitemAction, eventData.listitem, eventData.listview);
+                        this.onListItemMenuItemElementSelected(eventData.listitemAction, eventData.listitem, eventData.listview);
                     }
                     else {
                         this.onListItemElementSelected(eventData.listitem, eventData.listview);
@@ -838,7 +838,7 @@ class ViewController {
                 var targetItem = lookupTarget(event.target);
                 if (targetItem) {
                     // we feedback which menu item for which item of which listview has been selected...
-                    this.onListItemMenuItemSelected(targetItem, listitem, listview);
+                    this.onListItemMenuItemElementSelected(targetItem, listitem, listview);
                 }
 
             }.bind(this);
@@ -909,36 +909,47 @@ class ViewController {
      * listitem: the list element for which the menu was created
      * listview: the listview
      */
-    onListItemMenuItemSelected(menuitem, listitem, listview) {
-        console.log("ViewController.onListItemMenuItemSelected(): " + menuitem + " for " + listitem + " from " + listview);
+    onListItemMenuItemElementSelected(menuitem, listitemelement, listview) {
+        console.log("ViewController.onListItemMenuItemElementSelected(): " + menuitem + " for " + listitemelement + " from " + listview);
 
-        var targetview = menuitem.getAttribute("data-mwf-targetview");
-        var targetaction = menuitem.getAttribute("data-mwf-targetaction");
-        var itemid = listitem.getAttribute("data-mwf-id");
-        if (itemid && (targetview || targetaction)) {
-            var itemObj = this.readFromListview(listitem.getAttribute("data-mwf-id"));
+        var itemid = listitemelement.getAttribute("data-mwf-id");
+
+        if (itemid) {
+            var itemObj = this.readFromListview(listitemelement.getAttribute("data-mwf-id"));
             if (!itemObj) {
-                console.log("ViewController.onListItemMenuItemSelected(): cannot run targetaction or targetview. Item with id does not seem to be contained in list: " + listitem.getAttribute("data-mwf-id"));
+                console.warn("ViewController.onListItemMenuItemElementSelected(): Item with id does not seem to be contained in list: " + listitemelement.getAttribute("data-mwf-id") + ". Either this is an error, or selection must be handled by implementing onListItemMenuItemSelected in view controller");
+                this.onListItemMenuItemSelected(menuitem,null,listview);
             }
             else {
-                if (targetaction) {
-                    console.log("ViewController.onListItemMenuItemSelected(): will call targetaction on view controller: " + targetaction);
-                    // we invoke the function dynamically - TODO: need to check how this can be done more elegantly than using eval
-                    var targetactionfunction = "this." + targetaction + "(itemObj)";
-                    // by default, the function will be passed the item
-                    eval(targetactionfunction);
-                }
-                else {
-                    console.log("ViewController.onListItemMenuItemSelected(): will open targetview on view controller: " + targetview);
-                    // we pass the item as argument using the key "item"
-                    this.nextView(targetview,{item: itemObj});
-                }
+                this.onListItemMenuItemSelected(menuitem,itemObj,listview);
             }
         }
         else {
-            console.warn("ViewController.onListItemMenuItemSelected(): no itemid or neither targetview nor targetaction specified for listitem. Handling selection needs to be dealt with by the given view controller implementation: " + itemid + "/" + targetview + "/" + targetaction);
+            console.warn("ViewController.onListItemMenuItemElementSelected(): no itemid specified for listitem. Handling selection needs to be dealt with by the given view controller implementation: " + itemid + "/" + targetview + "/" + targetaction);
+            this.onListItemMenuItemSelected(menuitem,null,listview);
         }
 
+    }
+
+    onListItemMenuItemSelected(menuitem,itemObj,listview) {
+        var targetview = menuitem.getAttribute("data-mwf-targetview");
+        var targetaction = menuitem.getAttribute("data-mwf-targetaction");
+
+        if (targetaction) {
+            console.log("ViewController.onListItemMenuItemSelected(): will call targetaction on view controller: " + targetaction);
+            // we invoke the function dynamically - TODO: need to check how this can be done more elegantly than using eval
+            var targetactionfunction = "this." + targetaction + "(itemObj)";
+            // by default, the function will be passed the item
+            eval(targetactionfunction);
+        }
+        else if (targetview) {
+            console.log("ViewController.onListItemMenuItemSelected(): will open targetview on view controller: " + targetview);
+            // we pass the item as argument using the key "item"
+            this.nextView(targetview,{item: itemObj});
+        }
+        else {
+            console.error("ViewController.onListItemMenuItemSelected(): selected menu item neither specifies targetview nor targetaction. Either this is an error, or the item should be dealt with in local view controller implementation.");
+        }
     }
 
     /*
