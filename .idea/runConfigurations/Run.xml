@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="/usr/local/Cellar/node/6.3.0/bin/node" path-to-js-file="webserver.js" working-dir="$PROJECT_DIR$">
-    <method />
-  </configuration>
-</component>
