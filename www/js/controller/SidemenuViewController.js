@@ -1,39 +1,37 @@
 /**
  * @author Jörn Kreutel
  */
-define(["mwf","mwfUtils"], function(mwf,mwfUtils) {
-    console.log("loading module...");
+import * as mwf from "../../lib/js/mwf/mwf.js";
+import * as entities from "../model/Entities.js";
 
-    class SidemenuViewController extends mwf.SidemenuViewController {
+console.log("loading module...");
 
-        constructor() {
-            console.log("<constructor>");
-            super();
-        }
+export default class SidemenuViewController extends mwf.SidemenuViewController {
 
-        // here, the default action should be called at the end after handling, e.g., particular actions locally
-        onMenuItemSelected(item) {
-            console.log("onMenuItemSelected()");
-
-            if (item.getAttribute("data-mwf-id") == "mainmenu-reset") {
-                if (confirm("Sollen alle lokalen Daten zurückgesetzt werden?")) {
-                    var request = indexedDB.deleteDatabase("mwfdb");
-                    request.onsuccess = function() {
-                        alert("Daten wurden zurückgesetzt. Refresh sollte ausgeführt werden!");
-                    }
-                    request.onerror = function() {
-                        alert("Zurücksetzen fehlgeschlagen! Versuchen Sie einen Neustart des Browsers durchzuführen.");
-                    }
-                }
-            }
-            else {
-                super.onMenuItemSelected(item);
-            }
-        }
-
+    constructor() {
+        console.log("<constructor>");
+        super();
     }
 
-    return SidemenuViewController;
+    // here, the default action should be called at the end after handling, e.g., particular actions locally
+    onMenuItemSelected(item) {
+        console.log("onMenuItemSelected()");
 
-});
+        if (item.getAttribute("data-mwf-id") == "mainmenu-reset") {
+            if (confirm("Sollen alle lokalen Daten zurückgesetzt werden?")) {
+                var request = indexedDB.deleteDatabase("mwfdb");
+                request.onsuccess = function() {
+                    alert("Daten wurden zurückgesetzt. Refresh sollte ausgeführt werden!");
+                }
+                request.onerror = function() {
+                    alert("Zurücksetzen fehlgeschlagen! Versuchen Sie einen Neustart des Browsers durchzuführen.");
+                }
+            }
+        }
+        else {
+            super.onMenuItemSelected(item);
+        }
+    }
+
+}
 

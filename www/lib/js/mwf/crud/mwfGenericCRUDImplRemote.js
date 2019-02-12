@@ -3,49 +3,87 @@
  *
  * TODO: there is an issue with updating tags!!! Seems associations with taggable items are overriden on update... locally it works, though...
  */
-define(["xhr", "EntityManager", "mwfUtils"], function (xhr, EntityManager, mwfUtils) {
+import * as xhr from "./mwfXhr.js";
+import * as EntityManager from "./mwfEntityManager.js";
+import * as mwfUtils from "../mwfUtils.js"
 
-    console.log("loading module.");
+console.log("loading module.");
 
-    function GenericCRUDImplRemote(etype) {
-        console.log("GenericCRUDRemote(): " + etype);
+function GenericCRUDImplRemote(etype) {
+    console.log("GenericCRUDRemote(): " + etype);
 
-        this.entitytype = etype.toLowerCase();
-        if (!mwfUtils.endsWith(this.entitytype, "s")) {
-            this.entitytype += "s";
-        }
+    this.entitytype = etype.toLowerCase();
+    if (!mwfUtils.endsWith(this.entitytype, "s")) {
+        this.entitytype += "s";
+    }
 
-        function baseUrl() {
-            return "/" + this.entitytype + "/";
-        }
+    function baseUrl() {
+        return "/" + this.entitytype + "/";
+    }
 
-        this.create = function (item, callback) {
+    this.create = function (item, callback) {
+        return new Promise((resolve,reject) => {
             console.log("create(): " + this.entitytype);
             // we copy the attributes of the object to a temporary object which will be persisted
-            xhr.create(baseUrl.call(this), mwfUtils.createPersistableClone(item), callback);
-        };
+            xhr.create(baseUrl.call(this), mwfUtils.createPersistableClone(item), (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.update = function (id, update, callback) {
+    this.update = function (id, update, callback) {
+        return new Promise((resolve,reject) => {
             console.log("update(): " + this.entitytype);
-            xhr.update(baseUrl.call(this) + id, mwfUtils.createPersistableClone(update), callback);
-        };
+            xhr.update(baseUrl.call(this) + id, mwfUtils.createPersistableClone(update), (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.delete = function (id, callback) {
+    this.delete = function (id, callback) {
+        return new Promise((resolve,reject) => {
             console.log("delete(): " + this.entitytype);
-            xhr.deleat(baseUrl.call(this) + id, null, callback);
-        };
+            xhr.deleat(baseUrl.call(this) + id, null, (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.read = function (id, callback) {
+    this.read = function (id, callback) {
+        return new Promise((resolve,reject) => {
             console.log("read(): " + this.entitytype);
-            xhr.read(baseUrl.call(this) + id, null, callback);
-        };
+            xhr.read(baseUrl.call(this) + id, null, (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.readAll = function (callback) {
+    this.readAll = function (callback) {
+        return new Promise((resolve,reject) => {
             console.log("readAll(): " + this.entitytype);
-            xhr.read(baseUrl.call(this), null, callback);
-        };
+            xhr.read(baseUrl.call(this), null, (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.persistMediaContent = function (entity, attr, fileObj, callback) {
+    this.persistMediaContent = function (entity, attr, fileObj, callback) {
+        return new Promise((resolve,reject) => {
             // we use a multipart request created with the fileObj
             var formdata = new FormData();
             formdata.append(attr, fileObj);
@@ -60,7 +98,10 @@ define(["xhr", "EntityManager", "mwfUtils"], function (xhr, EntityManager, mwfUt
                         var mediaPath = responseObj[attr];
                         if (!mediaPath) {
                             console.error("persistMediaContent(): formdata response does not contain attribute " + attr + ". Somethins seems to be wrong...");
-                            callback();
+                            if (callback) {
+                                callback();
+                            }
+                            resolve();
                         } else {
                             console.log("persistMediaContent(): media path from formdata is: " + mediaPath + ". Re-setting it on entity...");
                             entity[attr] = mediaPath;
@@ -70,31 +111,39 @@ define(["xhr", "EntityManager", "mwfUtils"], function (xhr, EntityManager, mwfUt
                             } else {
                                 console.warn("persistMediaContent(): no content type specified for uploaded content!");
                             }
-                            callback(entity);
+                            if (callback) {
+                                callback(entity);
+                            }
+                            resolve(entity);
                         }
                     } else {
                         console.error("persistMediaContent(): got an error on sending formdata! Status is: " + xhrq.status);
-                        callback();
+                        if (callback) {
+                            callback();
+                        }
+                        resolve();
                     }
                 }
             };
             xhrq.open("POST","/" + xhr.getApiprefix() + baseUrl.call(this));
             xhrq.send(formdata);
-        };
-
-        this.loadMediaContent = function (entity, attr, callback) {
-            callback(entity);
-        };
-
-    }
-
-
-    function newInstance(type) {
-        return new GenericCRUDImplRemote(type);
-    }
-
-    return {
-        newInstance: newInstance
+        });
     };
 
-});
+    this.loadMediaContent = function (entity, attr, callback) {
+        return new Promise((resolve,reject) => {
+            if (callback) {
+                callback(entity);
+            }
+            resolve(entity);
+        })
+    };
+
+}
+
+
+function newInstance(type) {
+    return new GenericCRUDImplRemote(type);
+}
+
+export {newInstance}

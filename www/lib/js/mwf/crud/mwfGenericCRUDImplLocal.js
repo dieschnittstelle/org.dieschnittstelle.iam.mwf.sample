@@ -2,25 +2,33 @@
  * Created by master on 31.01.16.
  */
 
-define(["indexeddb", "EntityManager", "mwfUtils"], function (indexeddb, EntityManager, mwfUtils) {
+import * as indexeddb from "./mwfIndexeddb.js";
+import * as EntityManager from "./mwfEntityManager.js";
+import * as mwfUtils from "../mwfUtils.js";
 
-    console.log("loading module. Using indexeddb: " + indexeddb);
+//console.log("loading module. Using indexeddb: " + indexeddb);
 
-    function initialiseDB(dbname, dbversion, objectstores, callback) {
+async function initialiseDB(dbname, dbversion, objectstores, callback) {
+    return new Promise((resolve,reject) => {
         var idbinstance = indexeddb.createInstance(dbname, dbversion, objectstores);
         console.log("created db instance: " + idbinstance + ". Now initialise it...");
         idbinstance.initialise(function () {
             console.log("local db has been initialised: " + indexeddb.getInstance());
-            callback();
+            if (callback) {
+                callback();
+            }
+            resolve();
         });
-    }
+    });
+}
 
-    function GenericCRUDImplLocal(etype) {
-        console.log("GenericCRUDLocal(): " + etype);
+function GenericCRUDImplLocal(etype) {
+    console.log("GenericCRUDLocal(): " + etype);
 
-        this.entitytype = etype;
+    this.entitytype = etype;
 
-        this.create = function (item, callback) {
+    this.create = function (item, callback) {
+        return new Promise((resolve,reject) => {
             console.log("create(): " + this.entitytype);
             // we copy the attributes of the object to a temporary object which will be persisted
 
@@ -29,31 +37,64 @@ define(["indexeddb", "EntityManager", "mwfUtils"], function (indexeddb, EntityMa
                 /*jslint nomen: true*/
                 item._id = created._id;
                 /*jslint nomen: false*/
-                callback(item);
+                if (callback) {
+                    callback(item);
+                }
+                resolve(item);
             });
-        };
+        });
+    };
 
-        this.update = function (id, update, callback) {
+    this.update = function (id, update, callback) {
+        return new Promise((resolve,reject) => {
             console.log("update(): " + this.entitytype);
-            indexeddb.getInstance().updateObject(this.entitytype, id, mwfUtils.createPersistableClone(update), callback);
-        };
+            indexeddb.getInstance().updateObject(this.entitytype, id, mwfUtils.createPersistableClone(update), (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.delete = function (id, callback) {
+    this.delete = function (id, callback) {
+        return new Promise((resolve,reject) => {
             console.log("delete(): " + this.entitytype);
-            indexeddb.getInstance().deleteObject(this.entitytype, id, callback);
-        };
+            indexeddb.getInstance().deleteObject(this.entitytype, id, (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.read = function (id, callback) {
+    this.read = function (id, callback) {
+        return new Promise((resolve,reject) => {
             console.log("read(): " + this.entitytype);
-            indexeddb.getInstance().readObject(this.entitytype, id, callback);
-        };
+            indexeddb.getInstance().readObject(this.entitytype, id, (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.readAll = function (callback) {
+    this.readAll = function (callback) {
+        return new Promise((resolve,reject) => {
             console.log("readAll(): " + this.entitytype);
-            indexeddb.getInstance().readAllObjects(this.entitytype, callback);
-        };
+            indexeddb.getInstance().readAllObjects(this.entitytype, (result) => {
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        });
+    };
 
-        this.persistMediaContent = function (entity, attr, fileObj, callback) {
+    this.persistMediaContent = function (entity, attr, fileObj, callback) {
+        return new Promise((resolve,reject) => {
             console.log("persistMediaContent(): " + fileObj);
             // we extract the content from the contentElement and write it into the local storage
             var reader = new FileReader();
@@ -71,12 +112,15 @@ define(["indexeddb", "EntityManager", "mwfUtils"], function (indexeddb, EntityMa
                 if (callback) {
                     callback(entity);
                 }
+                resolve(entity);
             };
             console.log("reading content...");
             reader.readAsDataURL(fileObj);
-        };
+        });
+    };
 
-        this.loadMediaContent = function (entity, attr, callback) {
+    this.loadMediaContent = function (entity, attr, callback) {
+        return new Promise((resolve,reject) => {
             console.log("loadMediaContent()");
             var valref = entity[attr + "_reference"];
             // check whether the attr has a localStorage
@@ -90,22 +134,23 @@ define(["indexeddb", "EntityManager", "mwfUtils"], function (indexeddb, EntityMa
                 if (callback) {
                     callback(entity);
                 }
+                resolve(entity);
             } else {
                 console.log("loadMediaContent(): entity does not use localStorage reference...");
                 callback(entity);
+                resolve(entity);
             }
-        };
-
-    }
-
-
-    function newInstance(type) {
-        return new GenericCRUDImplLocal(type);
-    }
-
-    return {
-        newInstance: newInstance,
-        initialiseDB: initialiseDB
+        });
     };
 
-});
+}
+
+
+function newInstance(type) {
+    return new GenericCRUDImplLocal(type);
+}
+
+export {
+    newInstance,
+    initialiseDB
+};

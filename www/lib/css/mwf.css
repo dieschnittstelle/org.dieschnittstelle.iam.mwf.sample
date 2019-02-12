@@ -797,7 +797,12 @@ li input {
 }
 
 body.mwf-loading-app {
-    display: none;
+    opacity: 0.0;
+}
+
+body.mwf-loaded-app {
+    opacity: 1.0;
+    transition: opacity 1s;
 }
 
 .mwf-body p {
@@ -819,6 +824,11 @@ body.mwf-loading-app {
 .mwf-view header h2.mwf-dyncontent, .mwf-view header h1.mwf-dyncontent {
     max-width: 50%;
 }
+
+.mwf-li-titleblock h2.mwf-dyncontent, .mwf-view .mwf-li-titleblock h3.mwf-dyncontent {
+    max-width: 100%;
+}
+
 
 /* support material-style input labels for fieldset and legend */
 
