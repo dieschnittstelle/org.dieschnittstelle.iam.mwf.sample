@@ -60,72 +60,79 @@ function CRUDImpl(tenant) {
 
     this.processRequest = function(req, res, apiref) {
 
-        // we first need to create a connection to the db
-        console.log(databaseLogPrefix + ".processRequest(): create db connection to: " + databaseUrl);
+        // we truncate the url
+        var uri = utils.substringAfter(req.url, "/" + apiref + "/");
 
-        mdbclient.connect(databaseUrl, function(err, db) {
+        // handle upload independently of access to mongodb
+        if (req.method == "POST" && utils.startsWith(req.headers["content-type"], "multipart/form-data;")) {
+            // we first need to create a connection to the db
+            console.log(databaseLogPrefix + ".processRequest(): we have a multipart request. No need to connect to db");
+            handleMultipartRequest(uri, req, res);
+        }
+        else {
+            // we first need to create a connection to the db
+            console.log(databaseLogPrefix + ".processRequest(): create db connection to: " + databaseUrl);
+            mdbclient.connect(databaseUrl, function (err, db) {
 
-            if (err) {
-                console.error(databaseLogPrefix + ".processRequest(): cannot access database: " + err);
-                res.writeHead(500);
-                res.end();
-                return;
-            }
+                if (err) {
+                    console.error(databaseLogPrefix + ".processRequest(): cannot access database: " + err);
+                    res.writeHead(500);
+                    res.end();
+                    return;
+                }
 
-            console.log(databaseLogPrefix + ".processRequest(): got db: " + db);
+                console.log(databaseLogPrefix + ".processRequest(): got db: " + db);
 
-            console.log(databaseLogPrefix + ".processRequest(): req: " + req);
-            console.log(databaseLogPrefix + ".processRequest(): req.method: " + req.method);
-            console.log(databaseLogPrefix + ".processRequest(): req.url: " + req.url);
-            console.log(databaseLogPrefix + ".processRequest(): req header user-agent: " + req.headers["user-agent"]);
-            console.log(databaseLogPrefix + ".processRequest(): req header host: " + req.headers["host"]);
+                console.log(databaseLogPrefix + ".processRequest(): req: " + req);
+                console.log(databaseLogPrefix + ".processRequest(): req.method: " + req.method);
+                console.log(databaseLogPrefix + ".processRequest(): req.url: " + req.url);
+                console.log(databaseLogPrefix + ".processRequest(): req header user-agent: " + req.headers["user-agent"]);
+                console.log(databaseLogPrefix + ".processRequest(): req header host: " + req.headers["host"]);
 
-            // we truncate the url
-            var uri = utils.substringAfter(req.url, "/" + apiref + "/");
+                // we assume the rest of the url specifies the collection and possibly object to be accessed and wrap this information in a special type of object
+                var mdbrequest = new MDBRequest(uri);
 
-            // we assume the rest of the url specifies the collection and possibly object to be accessed and wrap this information in a special type of object
-            var mdbrequest = new MDBRequest(uri);
+                // load the collection
+                var collection = db.collection(mdbrequest.collection);
 
-            // load the collection
-            var collection = db.collection(mdbrequest.collection);
+                console.log(databaseLogPrefix + ".processRequest(): collection from db: " + collection);
 
-            console.log(databaseLogPrefix + ".processRequest(): collection from db: " + collection);
-
-            if (collection) {
-                if (req.method == "GET") {
-                    if (mdbrequest.objectid) {
-                        readObject(collection, mdbrequest.objectid, req, res, db);
+                if (collection) {
+                    if (req.method == "GET") {
+                        if (mdbrequest.objectid) {
+                            readObject(collection, mdbrequest.objectid, req, res, db);
+                        } else {
+                            readAllObjects(collection, req, res, db);
+                        }
+                    } else if (req.method == "POST") {
+                        // MFM: check whether we have a multipart request
+                        if (utils.startsWith(req.headers["content-type"], "multipart/form-data;")) {
+                            handleMultipartRequest(uri, req, res);
+                            // on dealing with multipart requests, we close the connection immediately
+                            db.close();
+                        }
+                        else {
+                            createObject(collection, req, res, db);
+                        }
+                    } else if (req.method == "PUT") {
+                        updateObject(collection, mdbrequest.objectid, req, res, db);
+                    } else if (req.method == "DELETE") {
+                        deleteObject(collection, mdbrequest.objectid, req, res, db);
                     } else {
-                        readAllObjects(collection, req, res, db);
-                    }
-                } else if (req.method == "POST") {
-                    // MFM: check whether we have a multipart request
-                    if (utils.startsWith(req.headers["content-type"], "multipart/form-data;")) {
-                        handleMultipartRequest(uri, req, res);
-                        // on dealing with multipart requests, we close the connection immediately
                         db.close();
+                        console.error(databaseLogPrefix + ".processRequest(): cannot handle request method: " + req.method);
+                        res.writeHead(405);
+                        res.end();
                     }
-                    else {
-                        createObject(collection, req, res, db);
-                    }
-                } else if (req.method == "PUT") {
-                    updateObject(collection, mdbrequest.objectid, req, res, db);
-                } else if (req.method == "DELETE") {
-                    deleteObject(collection, mdbrequest.objectid, req, res, db);
                 } else {
                     db.close();
-                    console.error(databaseLogPrefix + ".processRequest(): cannot handle request method: " + req.method);
-                    res.writeHead(405);
+                    console.error(databaseLogPrefix + ".processRequest(): request does not seem to specifiy a collection: " + uri + "!");
+                    res.writeHead(400);
                     res.end();
                 }
-            } else {
-                db.close();
-                console.error(databaseLogPrefix + ".processRequest(): request does not seem to specifiy a collection: " + uri + "!");
-                res.writeHead(400);
-                res.end();
-            }
 
-        });
+            });
+        }
     }
 
     /*
