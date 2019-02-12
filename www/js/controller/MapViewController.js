@@ -4,11 +4,10 @@
 
 // we use the model from which we take the location type
 
-import * as mwf from "../../lib/js/mwf/mwf.js";
-import * as entities from "../model/Entities.js";
-import * as mwfUtils from "../../lib/js/mwf/mwfUtils.js";
-import mapHolder from "../../lib/js/mwf/controller/mwfMapHolderLeaflet.js";
-
+import {mwf} from "../Main.js";
+import {entities} from "../Main.js";
+import {mwfUtils} from "../Main.js";
+import {mapHolder} from "../Main.js";
 
 export default class MapViewController extends mwf.ViewController {
 

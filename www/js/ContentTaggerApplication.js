@@ -1,12 +1,12 @@
 /**
  * Created by master on 17.02.16.
  */
-import * as mwf from "../lib/js/mwf/mwf.js";
-import * as mwfUtils from "../lib/js/mwf/mwfUtils.js";
-import * as EntityManager from "../lib/js/mwf/crud/mwfEntityManager.js";
-import * as entities from "./model/Entities.js";
-import * as GenericCRUDImplLocal from "../lib/js/mwf/crud/mwfGenericCRUDImplLocal.js";
-import * as GenericCRUDImplRemote from "../lib/js/mwf/crud/mwfGenericCRUDImplRemote.js";
+import {mwf} from "./Main.js";
+import {mwfUtils} from "./Main.js";
+import {EntityManager} from "./Main.js";
+import {GenericCRUDImplLocal} from "./Main.js";
+import {GenericCRUDImplRemote} from "./Main.js";
+import {entities} from "./Main.js";
 
 class ContentTaggerApplication extends mwf.Application {
 

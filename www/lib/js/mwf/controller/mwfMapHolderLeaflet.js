@@ -6,7 +6,7 @@
 // TODO: organise this differently, there is still some optimisation potential, e.g. we could simply return ourselves
 // on createMap rather than the map and provide map access setting the map object as property
 
-    // this needs to be global
+// this needs to be global
 var mapObject;
 
 // some default location

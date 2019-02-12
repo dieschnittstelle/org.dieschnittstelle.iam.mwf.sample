@@ -1,8 +1,8 @@
 /**
  * @author Jörn Kreutel
  */
-import * as mwf from "../../lib/js/mwf/mwf.js";
-import * as entities from "../model/Entities.js";
+import {mwf} from "../Main.js";
+import {entities} from "../Main.js";
 
 console.log("loading module...");
 

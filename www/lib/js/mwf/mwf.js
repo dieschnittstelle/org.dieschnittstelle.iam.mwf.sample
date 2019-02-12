@@ -7,9 +7,9 @@
 // TODO: identify listviews by data-mwf-id rather than by id?
 // TODO: allow to switch off mwf.stringify() for performance optimisation!
 
-import * as mwfUtils from "./mwfUtils.js";
-import * as eventhandling from "./mwfEventhandling.js";
-import * as EntityManager from "./crud/mwfEntityManager.js";
+import {mwfUtils} from "../framework-modules.js";
+import {eventhandling} from "../framework-modules.js";
+import {EntityManager} from "../framework-modules.js";
 import * as thisapp from "../../../js/Main.js";
 
 console.log("loading module...");

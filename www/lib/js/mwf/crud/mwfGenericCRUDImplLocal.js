@@ -2,9 +2,9 @@
  * Created by master on 31.01.16.
  */
 
-import * as indexeddb from "./mwfIndexeddb.js";
-import * as EntityManager from "./mwfEntityManager.js";
-import * as mwfUtils from "../mwfUtils.js";
+import {indexeddb} from "../../framework-modules.js";
+import {EntityManager} from "../../framework-modules.js";
+import {mwfUtils} from "../../framework-modules.js";
 
 //console.log("loading module. Using indexeddb: " + indexeddb);
 

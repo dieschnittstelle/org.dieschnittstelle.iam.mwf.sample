@@ -1,10 +1,11 @@
 /**
  * @author Jörn Kreutel
  */
-import * as mwf from "../../lib/js/mwf/mwf.js";
-import * as entities from "../model/Entities.js";
-import * as mwfUtils from "../../lib/js/mwf/mwfUtils.js";
+import {mwf} from "../Main.js";
+import {entities} from "../Main.js";
+import {mwfUtils} from "../Main.js";
 
+// TODO: this controller is not yet sensitive with regard to deletion of tagged items
 export default class TaggableOverviewViewController extends mwf.ViewController {
 
     constructor() {

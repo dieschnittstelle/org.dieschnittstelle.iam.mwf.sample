@@ -8,8 +8,8 @@
  * a global counter for ids
  */
 
-import * as EntityManager from "../../lib/js/mwf/crud/mwfEntityManager.js";
-
+import {mwfUtils} from "../Main.js";
+import {EntityManager} from "../Main.js";
 
 /*************
  * Taggable

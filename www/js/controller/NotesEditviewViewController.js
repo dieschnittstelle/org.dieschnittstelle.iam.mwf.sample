@@ -3,9 +3,9 @@
  *
  * TODO: when adding a tag without saving the object, tag list creation may not work correctly. It might be better to undo all changes once leaving the view without saving!
  */
-import * as mwf from "../../lib/js/mwf/mwf.js";
-import * as entities from "../model/Entities.js";
-import * as mwfUtils from "../../lib/js/mwf/mwfUtils.js";
+import {mwf} from "../Main.js";
+import {entities} from "../Main.js";
+import {mwfUtils} from "../Main.js";
 
 export default class NotesDetailviewViewController extends mwf.ViewController {
 

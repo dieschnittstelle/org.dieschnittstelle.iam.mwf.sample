@@ -1,7 +1,7 @@
 /**
  * @author Jörn Kreutel
  */
-import * as mwf from "../mwf.js";
+import {mwf} from "../../framework-modules.js";
 
 export default function GenericDialogTemplateViewController() {
     console.log("GenericDialogTemplateViewController()");
