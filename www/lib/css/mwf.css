@@ -1,6 +1,5 @@
 @media (orientation: portrait) {
-    .mwf-vhfill-container {
-    }
+    .mwf-vhfill-container {}
 }
 
 @media (orientation: landscape) {
@@ -13,7 +12,7 @@
 body {
     /* for debugging... */
     /*background-color: white*/
-    background-color: rgb(45,45,45);
+    background-color: rgb(45, 45, 45);
     color: white;
     height: 100%;
     width: 100%;
@@ -39,13 +38,13 @@ body {
 .mwf-currentview {
     z-index: 1;
     opacity: 1.0;
-    transition: opacity 0.5s;
+    transition: opacity 1s;
 }
 
 .mwf-stopped, .mwf-paused {
-    z-index: 0;
+    z-index: -1;
     opacity: 0.0;
-    transition: opacity 1s;
+    transition: opacity 0.5s;
 }
 
 .mwf-idle {
@@ -53,7 +52,7 @@ body {
 }
 
 header {
-    background-color: rgb(60,60,60);
+    background-color: rgb(60, 60, 60);
     color: white;
     height: 40px;
 }
@@ -71,6 +70,7 @@ header h2, header h1 {
 }
 
 /* by default, dialog-body is dealt with like the body of a normal view */
+
 .mwf-dialog main, .mwf-dialog-body {
     height: 100%;
     font-size: 16pt;
@@ -78,15 +78,17 @@ header h2, header h1 {
 }
 
 /* this is for dialogs that display some message */
-.mwf-dialog main > p, .mwf-dialog-body > p {
+
+.mwf-dialog main>p, .mwf-dialog-body>p {
     margin-left: 10px;
     margin-right: 10px;
     color: black;
 }
 
 /* this needs to be restricted to 'normal' views, not dialogs */
+
 .mwf-body, .mwf-view main {
-    background-color: rgb(45,45,45);
+    background-color: rgb(45, 45, 45);
     height: calc(100% - (40px + 40px));
     height: -webkit-calc(100% - (40px + 40px));
     font-size: 16pt;
@@ -113,6 +115,7 @@ footer button, footer input[type=submit] {
 }
 
 /* common style for input elements */
+
 button, input[type=submit], textarea {
     display: block;
     color: white;
@@ -147,7 +150,7 @@ fieldset.mwf-radiogroup * {
     padding-bottom: 0px;
 }
 
-fieldset.mwf-radiogroup  input[type=radio] {
+fieldset.mwf-radiogroup input[type=radio] {
     display: inline-block;
     margin-right: 7px;
     width: auto;
@@ -157,11 +160,11 @@ fieldset.mwf-radiogroup  input[type=radio] {
 fieldset.mwf-radiogroup input[type=radio]:not(:first-of-type) {
     margin-left: 15px;
 }
+
 fieldset.mwf-radiogroup label {
     display: inline-block !important;
     vertical-align: middle !important;
 }
-
 
 button.mwf-touched {
     background-color: #33B5E5;
@@ -171,13 +174,12 @@ button.mwf-touched {
 .mwf-icon, li .mwf-icon, .mwf-imgbutton, li .mwf-imgbutton, header .mwf-imgbutton, header input[type=submit].mwf-imgbutton {
     background-repeat: no-repeat;
     background-color: transparent;
-    font-size: 0pt;    
+    font-size: 0pt;
     width: 40px;
     height: 40px;
     padding: 0px;
     margin: 0px;
 }
-
 
 .mwf-imgbutton.mwf-touched {
     background-color: gray;
@@ -211,6 +213,7 @@ button.mwf-touched {
 }
 
 /* in case there are problems with scrolling, we may also fix the fab */
+
 .mwf-fab.mwf-fab-fixed-main {
     position: fixed;
     bottom: 45px;
@@ -226,12 +229,14 @@ button.mwf-touched {
 /* end of fab handling */
 
 /* format header and footer buttons */
+
 header button, footer button, header input[type=submit], footer[type=submit] {
     width: auto;
     height: 100%;
 }
 
 /* these are new alignment rules using flexbox rather than float - note that if a row contains both left-aligned and right-aligned elements, then the last left-aligned element must be declared as mwf-right-fill. For h1 in headers, we set this property by default */
+
 /* add mwf-alignbox for setting alignment environments manually */
 
 header, footer, li, .mwf-alignbox {
@@ -268,6 +273,7 @@ header h1 {
 /* end of flex box based alignment */
 
 /* these classes allow to realise alignment with floating */
+
 .mwf-alignbox-inline {
     display: inline-flex;
 }
@@ -290,6 +296,7 @@ header h1 {
 }
 
 /* dialogs are by default not visible */
+
 .mwf-dialog {
     display: none;
     position: absolute;
@@ -299,11 +306,11 @@ header h1 {
     height: 100%;
     z-index: 0;
 }
- 
+
 .mwf-dialog.mwf-hidden {
     display: block;
     opacity: 0.0;
-    transition: opacity 1s;
+    transition: opacity 0.5s;
 }
 
 .mwf-dialog.mwf-shown {
@@ -324,7 +331,7 @@ header h1 {
     max-height: 70%;
     /* for whatever reason, 80% spans over the whole width on the right hand side */
     width: 80%;
-    background-color: rgb(240,240,240);
+    background-color: rgb(240, 240, 240);
 }
 
 .mwf-dialog h2 {
@@ -338,7 +345,7 @@ header h1 {
     margin-bottom: 0px;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgb(220,220,220);
+    border-bottom: 1px solid rgb(220, 220, 220);
 }
 
 .mwf-dialog form {
@@ -358,11 +365,14 @@ header h1 {
     border-bottom: 3px solid limegreen;
 }
 
-
 /*@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)  {*/
-    /*.mwf-dialog input {*/
-        /*width: calc(100% - 40px);*/
-    /*}*/
+
+/*.mwf-dialog input {*/
+
+/*width: calc(100% - 40px);*/
+
+/*}*/
+
 /*}*/
 
 .mwf-dialog input:invalid {
@@ -375,7 +385,7 @@ header h1 {
 }
 
 .mwf-dialog .mwf-button.mwf-touched {
-    background-color: rgb(150,150,150);
+    background-color: rgb(150, 150, 150);
     opacity: 0.5;
 }
 
@@ -411,7 +421,7 @@ header h1 {
 
 .mwf-button.mwf-button-prio, .mwf-button:only-child {
     background-color: limegreen;
-    color: rgb(240,240,240);
+    color: rgb(240, 240, 240);
 }
 
 .mwf-buttonbar {
@@ -433,8 +443,8 @@ header h1 {
     background-color: inherit;
 }
 
-
 /* there is an issue about the sizing of fieldset, see: http://stackoverflow.com/questions/17408815/fieldset-resizes-wrong-appears-to-have-unremovable-min-width-min-content */
+
 .mwf-dialog fieldset {
     display: table-column;
     width: 85%;
@@ -443,17 +453,16 @@ header h1 {
 
 .mwf-dialog input {
     background-color: inherit;
-    color: rgb(90,90,90);
+    color: rgb(90, 90, 90);
 }
 
 .mwf-dialog legend {
-    color: rgb(90,90,90);
+    color: rgb(90, 90, 90);
 }
 
 .mwf-dialog form .mwf-disabled.mwf-touched {
     background-color: inherit;
 }
-
 
 /* forms */
 
@@ -465,18 +474,19 @@ form {
 }
 
 /* dialog forms use specfic styling */
+
 .mwf-dialog form {
     padding: 0px;
 }
 
 fieldset {
-     font-size: 12pt;
-     border: 1px solid rgb(120,120,120);
-     color: white;
-     padding-top: 0px;
-     padding-bottom: 2px;
-     width: calc(100% - 30px);
-     width: -webkit-calc(100% - 30px);
+    font-size: 12pt;
+    border: 1px solid rgb(120, 120, 120);
+    color: white;
+    padding-top: 0px;
+    padding-bottom: 2px;
+    width: calc(100% - 30px);
+    width: -webkit-calc(100% - 30px);
     /*max-width: 90%;
     min-width: 90%;*/
 }
@@ -494,7 +504,7 @@ output {
 input {
     width: 100%;
     max-width: 100%;
-    background-color: rgb(45,45,45);
+    background-color: rgb(45, 45, 45);
     border: none;
     color: white;
     font-size: 12pt;
@@ -508,6 +518,7 @@ fieldset img {
 /*
  * toasts - TODO: handle short/long by adding classes 'long' and ' short'
  */
+
 .mwf-toast {
     width: 60%;
     position: fixed;
@@ -534,6 +545,7 @@ fieldset img {
 /*
  * scrolling
  */
+
 .mwf-scrollview {
     overflow-y: auto;
     max-height: 100%;
@@ -542,6 +554,7 @@ fieldset img {
 /*
  * list views
  */
+
 ul {
     list-style: none;
     margin-top: 0px;
@@ -555,7 +568,7 @@ li, li.mwf-li-singletitle, li.mwf-li-title-subtitle {
     padding-bottom: 5px;
     height: 50px;
     max-height: 50px;
-    border-bottom: 1px solid rgb(120,120,120);
+    border-bottom: 1px solid rgb(120, 120, 120);
     /* these ones prevent text selection on list items */
     -moz-user-select: none;
     user-select: none;
@@ -585,7 +598,7 @@ li.mwf-disabled.mwf-touched * {
 
 li.mwf-li-singletitle .mwf-imgbutton, li.mwf-li-title-subtitle .mwf-imgbutton, li.mwf-li-singletitle .mwf-icon, li.mwf-li-title-subtitle .mwf-icon {
     margin-top: 5px;
-} 
+}
 
 .mwf-li-titleblock {
     padding-left: 10px;
@@ -622,7 +635,7 @@ h2.mwf-li-titleblock {
     font-weight: inherit;
     margin: 0px;
     font-size: 16pt;
-    padding-left: 0px;   
+    padding-left: 0px;
     overflow: inherit;
     max-height: 30px;
 }
@@ -637,7 +650,7 @@ h2.mwf-li-titleblock {
     margin-top: -2.5px;
     font-size: 10pt;
     font-style: italic;
-    padding-left: 0px;   
+    padding-left: 0px;
     max-height: 20px;
 }
 
@@ -660,14 +673,16 @@ li input {
 /*
 * sidemenu
 */
+
 /* the sidemenu will always be "shown", but in non-expanded state it will be shifted to the left */
+
 .mwf-sidemenu {
     opacity: 1.0;
     z-index: 3;
     position: absolute;
     top: 0px;
     margin: 0px;
-    background-color: rgb(70,70,70);
+    background-color: rgb(70, 70, 70);
     /* for the time being, transitions do not work on percentage values, so we set a predefined width and left position */
     /* width: 65%;
     left: -65%; */
@@ -687,6 +702,7 @@ li input {
 }
 
 /* we use a normally invisible border for marking a menu as selected */
+
 .mwf-sidemenu li {
     border-left: 5px solid transparent;
 }
@@ -702,6 +718,7 @@ li input {
 /*
  * actionmenu
  */
+
 .mwf-actionmenu {
     opacity: 1.0;
     z-index: 3;
@@ -714,7 +731,7 @@ li input {
     padding-left: 0px;
     padding-right: 0px;
     opacity: 1.0;
-    background-color: rgb(70,70,70);
+    background-color: rgb(70, 70, 70);
     width: 0px;
     transition: width 0.1s;
 }
@@ -729,7 +746,7 @@ li input {
     padding-left: 0px;
     padding-right: 0px;
     /* we need to set padding to 0 if the item is not visible */
-    border-bottom: 1px dotted rgb(120,120,120);
+    border-bottom: 1px dotted rgb(120, 120, 120);
 }
 
 .mwf-actionmenu li.mwf-li-singletitle:last-child, .mwf-listitem-menu li.mwf-li-singletitle:last-child {
@@ -737,6 +754,7 @@ li input {
 }
 
 /* actionmenu expanded: set width and padding */
+
 .mwf-actionmenu.mwf-expanded {
     width: 200px;
     padding-left: 5px;
@@ -749,7 +767,7 @@ li input {
     padding-right: 5px;
 }
 
-.mwf-disabled,[disabled] {
+.mwf-disabled, [disabled] {
     opacity: 0.5;
 }
 
@@ -762,13 +780,13 @@ li input {
  */
 
 .mwf-dialog.mwf-listitem-menu {
-    opacity: 1.0;
+    /*opacity: 1.0;*/
     z-index: 3;
     width: 80%;
     margin: 0px;
     padding: 0px;
-    background-color: rgb(70,70,70);
-    opacity: 1.0;
+    background-color: rgb(70, 70, 70);
+    /*opacity: 1.0;*/
 }
 
 .mwf-dialog.mwf-listitem-menu h2 {
@@ -788,6 +806,7 @@ li input {
 /*
  * maps
  */
+
 .mwf-map-popup-content-title {
     font-weight: bold;
 }
@@ -829,7 +848,6 @@ body.mwf-loaded-app {
     max-width: 100%;
 }
 
-
 /* support material-style input labels for fieldset and legend */
 
 fieldset.mwf-material {
@@ -859,6 +877,7 @@ fieldset.mwf-material.mwf-material-filled legend {
 /* the following rules handle the case that the browser marks elements as invalid even before any submit event has occurred */
 
 /* fieldset and legend valid */
+
 fieldset.mwf-material.mwf-material-filled.mwf-material-valid:invalid legend, fieldset.mwf-material.mwf-material-filled.mwf-material-valid legend {
     color: limegreen;
     opacity: 0.5;
@@ -872,7 +891,6 @@ fieldset.mwf-material legend .mwf-material-feedback:before {
     content: ":";
     padding-right: 2px;
 }
-
 
 /* fieldset and legend invalid */
 
@@ -899,13 +917,14 @@ fieldset.mwf-material input, fieldset.mwf-material textarea {
 }
 
 /* increase the height of the textarea beyond the height of the containing fieldset */
+
 fieldset.mwf-material textarea {
     top: 10px;
     height: 100px
 }
 
-
 /* skip outlines - this seems to be ignored by FF */
+
 fieldset.mwf-material input:focus, fieldset.mwf-material input:invalid, fieldset.mwf-material input:invalid:focus, fieldset.mwf-material textarea:focus {
     outline: none;
 }
@@ -925,6 +944,7 @@ fieldset.mwf-material input.mwf-material-valid:invalid {
  * 2) the alternative input element that will be marked as mwf-material-altinput (which will result in the element being hidden)
  * 3) a label also marked as mwf-material-altinput which will be placed on top of the mwf-material-altinput-target
  */
+
 fieldset.mwf-material input.mwf-material-altinput-target {
     padding-right: 50px;
     width: calc(100% - 70px);
@@ -945,7 +965,8 @@ fieldset.mwf-material label.mwf-material-altinput {
 }
 
 /* this is necessary for avoiding the autofill marking in chrome - note that we set the default color for the main element */
+
 fieldset.mwf-material input:-webkit-autofill {
     -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0 30px rgb(45,45,45) inset;
+    -webkit-box-shadow: 0 0 0 30px rgb(45, 45, 45) inset;
 }

@@ -330,6 +330,10 @@ function isWebserverAvailable(callback) {
     xhr.send();
 }
 
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export {
     showToast,
     enableLongpress,
@@ -348,7 +352,8 @@ export {
     removeTouch,
     stringifyObj as stringify,
     createPersistableClone,
-    isWebserverAvailable
+    isWebserverAvailable,
+    timeout
 };
 
 

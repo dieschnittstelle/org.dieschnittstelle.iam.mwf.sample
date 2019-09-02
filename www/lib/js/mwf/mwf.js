@@ -73,8 +73,12 @@ function hideMenusAndDialogs() {
         actionmenu[0].classList.remove("mwf-expanded");
     }
 
+    // REFACVIEWS
     var dialog = document.querySelector(".mwf-dialog.mwf-shown");
+    console.log("hideMenusAndDialogs(): dialog is: " + dialog);
     if (dialog) {
+
+
         var dialogid = getDialogId(dialog);
         // check whether the dialog has an embedded controller
         var dialogCtrl = applicationState.getEmbeddedController(dialogid);
@@ -83,9 +87,12 @@ function hideMenusAndDialogs() {
             dialogCtrl.hideDialog();
         }
         else {
+            // REFACVIEWS:
             console.log("hideMenusAndDialogs(): open dialog " + dialogid + " does not use a controller. Just change styling...");
             dialog.classList.remove("mwf-shown");
+            dialog.classList.add("mwf-hidden");
             dialog.onclick = null;
+            addRemoveOnFadedToElement(dialog);
         }
     }
 
@@ -96,6 +103,24 @@ function hideMenusAndDialogs() {
     var sidemenu = document.getElementsByClassName("mwf-sidemenu");
     if (sidemenu.length > 0) {
         sidemenu[0].classList.remove("mwf-expanded");
+    }
+}
+
+function addRemoveOnFadedToElement(el) {
+    if (el) {
+        console.debug("addRemoveOnFadedToElement(): ", el);
+        // we remove the view on transitionend
+        const removeOnFaded = () => {
+            el.removeEventListener("transitionend",removeOnFaded);
+            if (el.parentNode) {
+                console.log("transitionend(): remove element from parent: ",el);
+                el.parentNode.removeChild(el);
+            }
+            else {
+                console.log("transitionend(): remove element from parent not possible as parent has not been set");
+            }
+        }
+        el.addEventListener("transitionend",removeOnFaded);
     }
 }
 
@@ -273,22 +298,30 @@ function ApplicationState() {
     this.clearControllers = function (callback) {
         var countdown = parseInt(activeViewControllers.length,10);
         var totalCount = parseInt(activeViewControllers.length,10);
-        console.log("countdown is: " + countdown);
+        console.log("clearControllers(): countdown is: " + countdown);
 
-        var i, vc;
-        for (i = 0; i < totalCount; i++) {
-            vc = activeViewControllers.pop();
-            console.log("popped vc: " + vc);
+        for (var i = 0; i < totalCount; i++) {
+            let vc = activeViewControllers.pop();
+            console.log("clearControllers(): popped vc " + vc.root.id);
             if (vc) {
-                console.log("popped view controller: " + vc.root.id + ". Will call onstop");
+                console.log("clearControllers(): popped view controller: " + vc.root.id + ". Will call onstop");
                 vc.onstop().then(function () {
+                    // if we are still attached, we need to remove ourselves (but without animation) - this occurs if onstop() is called from clearControllers
+                    if (vc.root && vc.root.parentNode) {
+                        console.log("clearControllers(): after onstop(), will remove view from dom: " + vc.root.id);
+                        vc.root.parentNode.removeChild(vc.root);
+                    }
+                    else {
+                        console.log("clearControllers(): after onstop(), view is not attached to a parent: " + vc.root.id);
+                    }
+
                     countdown--;
                     if (countdown == 0) {
-                        console.log("no active view controllers left. Now call the callback from " + vc.root.id);
+                        console.log("clearControllers(): no active view controllers left. Now call the callback from " + vc.root.id);
                         callback.call(this, vc.root.id);
                     }
                     else {
-                        console.log("countdown is greaterorequal than one: " + countdown);
+                        console.log("clearControllers(): countdown is greaterorequal than one: " + countdown);
                     }
                 }.bind(this));
             }
@@ -562,6 +595,9 @@ class ViewController {
         this.root = view;
         this.args = args;
 
+        // REFACVIEWS:
+        // here, we attach the root to the document body
+        document.body.appendChild(this.root);
     }
 
     /*
@@ -798,7 +834,9 @@ class ViewController {
                 menuElement = this.getTemplateInstance(listitemMenuId);
             }
             else {
-                menuElement = document.getElementById(listitemMenuId);
+                // REFACVIEWS
+                // menuElement = document.getElementById(listitemMenuId);
+                menuElement = getTopLevelView(listitemMenuId);
             }
             //mwfUtils.feedbackTouchOnElement(menuElement);
 
@@ -993,12 +1031,24 @@ class ViewController {
 
     async onpause() {
         console.log("ViewController.onpause(): " + this.root.id);
-        this.root.classList.remove("mwf-currentview");
-        this.root.classList.add("mwf-paused");
+
+        // REFACVIEWS
+        // distinguish between dialog ctrl and other
+        if (this.isDialogCtrl) {
+            this.root.classList.remove("mwf-shown");
+            this.root.classList.add("mwf-hidden");
+        }
+        else {
+            this.root.classList.remove("mwf-currentview");
+            this.root.classList.add("mwf-paused");
+        }
 
         this.root.onclick = null;
 
         this.lcstatus = CONSTANTS.LIFECYCLE.PAUSED;
+
+        // REFACVIEWS:
+        addRemoveOnFadedToElement(this.root);
     }
 
     // the four lifecycle methods which we realise by setting class attributes
@@ -1056,11 +1106,23 @@ class ViewController {
 
     async onresume() {
         console.log("ViewController.onresume(): " + this.root.id);
+
+        document.body.appendChild(this.root);
+
+        // REFACVIEWS: in order for transitions to work on freshly appended views, we need a timeout
+        await mwfUtils.timeout(100);
+
         // on resume the next view will be displayed!
-        this.root.classList.remove("mwf-idle");
-        this.root.classList.remove("mwf-stopped");
-        this.root.classList.remove("mwf-paused");
-        this.root.classList.add("mwf-currentview");
+        if (this.isDialogCtrl) {
+            this.root.classList.remove("mwf-hidden");
+            this.root.classList.add("mwf-shown");
+        }
+        else {
+            this.root.classList.remove("mwf-idle");
+            this.root.classList.remove("mwf-stopped");
+            this.root.classList.remove("mwf-paused");
+            this.root.classList.add("mwf-currentview");
+        }
 
         var hideOverlays = this.hideOverlays.bind(this);
 
@@ -1238,7 +1300,9 @@ class ViewController {
             }.bind(this));
         }
         else {
-            var nextView = document.getElementById(viewid);
+            // REFACVIEWS
+            // var nextView = document.getElementById(viewid);
+            var nextView = getTopLevelView(viewid);
             if (!nextView) {
                 alert("ERROR: Next view " + viewid + " could not be found!");
             } else {
@@ -1284,7 +1348,9 @@ class ViewController {
         }
         else {
             // either we find the dialog in the document, or the dialog is a template
-            this.dialog = document.getElementById(dialogid);
+            // REFACVIEWS
+            // this.dialog = document.getElementById(dialogid);
+            this.dialog = getTopLevelView(dialogid);
             if (!this.dialog) {
                 console.log("lookup dialog as template: " + dialogid);
                 this.dialog = this.getTemplateInstance(dialogid);
@@ -1298,36 +1364,45 @@ class ViewController {
             this.dialog = this.dialog.root;
         }
 
-        // we reset all forms
-        this.prepareForms(this.dialog);
+        // REFACVIEWS: there might be timing issues...
+        if (this.dialog) {
 
-        // if the dialog is a child of the view controller, move it next to it as otherwise hiding the dialog controller in the background will not work - it seems that this does not need to be undone
-        if (!this.dialog.parentNode) {
-            this.root.parentNode.appendChild(this.dialog);
-        }
-        else if (this.dialog.parentNode == this.root) {
-            this.root.parentNode.appendChild(this.root.removeChild(this.dialog));
-        }
+            // we reset all forms
+            this.prepareForms(this.dialog);
 
-        var rootelement = this.root;
+            // if the dialog is a child of the view controller, move it next to it as otherwise hiding the dialog controller in the background will not work - it seems that this does not need to be undone
+            if (!this.dialog.parentNode) {
+                this.root.parentNode.appendChild(this.dialog);
+            }
+            else if (this.dialog.parentNode == this.root) {
+                this.root.parentNode.appendChild(this.root.removeChild(this.dialog));
+            }
 
-        // we need to instantiate the dialog in two steps because if it is included in a view it seems to be overlayn regardless of the z-index
-        this.dialog.classList.add("mwf-hidden");
-        // we cancel click propagation
-        this.dialog.removeEventListener("click", cancelClickPropagation);
-        this.dialog.addEventListener("click", cancelClickPropagation);
+            var rootelement = this.root;
 
-        var dia = this.dialog;
-        await promisifiedSetTimeout(100);
-        dia.classList.add("mwf-shown");
-        dia.classList.remove("mwf-hidden");
-        rootelement.classList.add("mwf-dialog-shown");
-        handleAutofocus(dia);
+            // we set the dialog to hidden
+            this.dialog.classList.add("mwf-hidden");
+            // we need to instantiate the dialog in two steps because if it is included in a view it seems to be overlayn regardless of the z-index
+            // REFACVIEWS
+            await mwfUtils.timeout(100);
+            // we cancel click propagation
+            this.dialog.removeEventListener("click", cancelClickPropagation);
+            this.dialog.addEventListener("click", cancelClickPropagation);
 
-        // check whether the dialog uses a view controller or not
-        var dialogCtrl = applicationState.getEmbeddedController(dialogid);
-        if (dialogCtrl) {
-            await this.handleDialogWithController(dialogCtrl,data);
+            var dia = this.dialog;
+            handleAutofocus(dia);
+
+            // REFACVIEWS
+            // check whether the dialog uses a view controller or not
+            var dialogCtrl = applicationState.getEmbeddedController(dialogid);
+            if (dialogCtrl) {
+                await this.handleDialogWithController(dialogCtrl, data);
+            }
+            else {
+                dia.classList.add("mwf-shown");
+                dia.classList.remove("mwf-hidden");
+                rootelement.classList.add("mwf-dialog-shown");
+            }
         }
     }
 
@@ -1340,7 +1415,12 @@ class ViewController {
         dialogCtrl.showDialog = this.showDialog.bind(this);
         dialogCtrl.hideDialog = this.hideDialog.bind(this);
 
+        // REFACVIEWS
+        // we tell the dialog that it is a dialog controller
+        dialogCtrl.isDialogCtrl = true;
+
         console.log("lcstatus of dialog controller: " + dialogCtrl.lcstatus);
+        this.root.classList.add("mwf-dialog-shown");
 
         // check whether the dialog has already been created or if it is only in constructed mode
         if (dialogCtrl.lcstatus == CONSTANTS.LIFECYCLE.CONSTRUCTED) {
@@ -1377,6 +1457,11 @@ class ViewController {
                 await dialogCtrl.onpause();
             }
             else {
+                console.log("hideDialog(): prepare removal on faded for dialog without controller", this.dialog);
+                // REFACVIEWS:
+                // we remove the dialog on transitionend
+                addRemoveOnFadedToElement(this.dialog);
+                this.dialog.classList.add("mwf-hidden");
                 this.dialog = null;
             }
         }
@@ -1642,16 +1727,22 @@ class SidemenuViewController extends EmbeddedViewController {
 
 
     async oncreate() {
+        console.log("SideMenuViewController.oncreate()");
         await super.oncreate();
 
         this.showMenu = (event) => {
             console.log("showMenu()");
             hideMenusAndDialogs.call(this);
-            this.root.classList.add("mwf-expanded");
-            this.root.onclick = cancelClickPropagation;
-            // we must not propagate, otherwise this triggers the hideMenu listener...
-            event.stopPropagation();
-        };
+            // REFACVIEWS
+            // we probably need to attach it to the body
+            document.body.appendChild(this.root);
+            setTimeout(() => {
+                    this.root.classList.add("mwf-expanded");
+                    this.root.onclick = cancelClickPropagation;
+                    // we must not propagate, otherwise this triggers the hideMenu listener...
+                    event.stopPropagation();
+                },100);
+         };
 
         this.hideMenu = () => {
             console.log("hideMenu()");
@@ -1672,9 +1763,14 @@ class SidemenuViewController extends EmbeddedViewController {
         }
     };
 
+    async onresume() {
+        console.log("SideMenuViewController.onresume()");
+        super.onresume();
+    }
+
     onMenuItemSelected(item) {
-        console.log("onMenuItemSelected(): " + item);
-        console.log("onMenuItemSelected(): id " + item.id + "/ mwf-id " + item.getAttribute("data-mwf-id"));
+        console.log("SideMenuViewController.onMenuItemSelected(): " + item);
+        console.log("SideMenuViewController.onMenuItemSelected(): id " + item.id + "/ mwf-id " + item.getAttribute("data-mwf-id"));
         var currentSelected = document.getElementsByClassName("mwf-selected");
         var i;
         for (i = 0; i < currentSelected.length; i++) {
@@ -1695,12 +1791,12 @@ class SidemenuViewController extends EmbeddedViewController {
 
     // handle attachment
     attachToView(view) {
-        console.log("attachToView: " + view);
+        console.log("SideMenuViewController: attachToView(): " + view);
         super.attachToView(view);
 
         // we lookup the mainmenu action from the view and attach to it
         var mainmenuActionElements = view.getElementsByClassName("mwf-img-sandwich-action");
-        console.log("found mainmenu elements: " + mainmenuActionElements.length);
+        console.log("SideMenuViewController: found mainmenu elements: " + mainmenuActionElements.length);
         if (mainmenuActionElements.length == 0) {
             console.log("view " + view.id + " does not seem to use a mainmenu action");
         }
@@ -1732,6 +1828,68 @@ class SidemenuViewController extends EmbeddedViewController {
 
 }
 
+// REFACVIEWS:
+// only active views will be part of the document
+// we create a map of top-level elements that are identified by their id and will replace usages of
+// getElementById by accesses to this map and lookup inside of the document as default
+const topLevelViews = {};
+
+let initialView = null;
+
+function getTopLevelView(id) {
+
+    console.debug("getTopLevelView(): " + id);
+
+    if (topLevelViews[id]) {
+        console.debug("getTopLevelView(): found: ",topLevelViews[id]);
+        return topLevelViews[id];
+    }
+    const el = document.getElementById(id);
+
+    if (el) {
+        console.debug("getTopLevelView(): found in document: ",el);
+        return el;
+    }
+
+    console.warn("getTopLevelView(): element with id " + id + " could not be found. Maybe it is a template, though.");
+
+    return null;
+}
+
+function extractTopLevelViews() {
+
+    console.log("extractTopLevelViews()");
+
+    // we need to extract the dialogs from their views
+    document.querySelectorAll(".mwf-dialog").forEach(e => {
+        if (e.id) {
+            console.debug("extractTopLevelViews(): found dialog: " + e.id);
+            topLevelViews[e.id] = e;
+            e.parentNode.removeChild(e);
+        }
+        else {
+            console.warn("extractTopLevelViews(): found dialog element without id: ", e);
+        }
+    });
+
+    document.querySelectorAll("body > div").forEach(e => {
+        if (e.id) {
+            console.debug("extractTopLevelViews(): found top level view: " + e.id);
+            topLevelViews[e.id] = e;
+            e.parentNode.removeChild(e);
+            if (e.classList.contains("mwf-view-initial")) {
+                console.log("extractTopLevelViews(): found initial view: ", initialView);
+                initialView = e;
+            }
+        }
+        else {
+            console.warn("extractTopLevelViews(): found element without id: ", e);
+        }
+    });
+
+    console.log("extractTopLevelViews(): found " + Object.keys(topLevelViews).length + " top level view elements, including dialogs...");
+}
+
 /*
  * application superclass, holds shared resources, and subclasses may implement shared logics
  */
@@ -1756,13 +1914,22 @@ class Application {
     async oncreate() {
         console.log("oncreate()");
 
-        var initialViews = this.bodyElement.getElementsByClassName("mwf-view-initial");
-        if (initialViews.length == 0) {
+        // REFACVIEWS
+        // var initialViews = this.bodyElement.getElementsByClassName("mwf-view-initial");
+        // if (initialViews.length == 0) {
+        //     mwfUtils.showToast("No initial view could be found!");
+        // } else {
+        //     this.initialView = initialViews[0];
+        //     console.log("Application.oncreate(): determined initialView: " + this.initialView.id);
+        // }
+
+        if (!initialView) {
             mwfUtils.showToast("No initial view could be found!");
         } else {
-            this.initialView = initialViews[0];
+            this.initialView = initialView;
             console.log("Application.oncreate(): determined initialView: " + this.initialView.id);
         }
+
     }
 
     registerEntity(entitytype,entitytypedef,notify) {
@@ -1943,6 +2110,9 @@ function onloadApplication() {
         // we extract the templates here in order not to get in conflict with the embedded view controllers
         applicationResources.extractTemplates();
 
+        // REFACVIEWS
+        extractTopLevelViews();
+
         // TODO: we might add more of the above processing into the application?
 
         // now instantiate the application
@@ -2006,12 +2176,6 @@ function retrieveAncestor(el,tagName) {
     else {
         return retrieveAncestor(el.parentNode,tagName);
     }
-}
-
-function promisifiedSetTimeout(timeout) {
-    return new Promise((resolve,reject) => {
-        setTimeout(resolve,timeout);
-    });
 }
 
 const stringify = mwfUtils.stringify;
