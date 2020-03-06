@@ -10,11 +10,36 @@
     <!-- include the manifest once the app is pwa ready -->
     <!--<link rel="manifest" href="pwa/webapp-manifest.json">-->
     <!-- load the styles -->
+
+<!--    &lt;!&ndash; these are the styles without theme - comment out/in the whole block for de/activating &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="lib/css/normalize.css"/>-->
+<!--    <link rel="stylesheet" href="lib/css/mwf.css"/>-->
+<!--    <link rel="stylesheet" href="lib/css/mwfIcons.css"/>-->
+
+    <!-- these are the styles with theme - comment out/in the whole block for de/activating -->
     <link rel="stylesheet" href="lib/css/normalize.css"/>
-    <link rel="stylesheet" href="lib/css/mwf.css"/>
-    <link rel="stylesheet" href="lib/css/mwfIcons.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-default-theme.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-with-theme.css"/>
+    <!-- the icons are used both with and without theme -->
+    <link rel="stylesheet" href="lib/css/mwfIcons.css" />
+    <!-- myapp-theme can provide settings for size and color that override the default settings -->
+    <link rel="stylesheet" href="css/theme/myapp-theme.css"/>
+
     <!-- the application specific style -->
     <link rel="stylesheet" href="css/cta.css"/>
+
+
+    <link rel="stylesheet" href="lib/css/normalize.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-default-theme.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-with-theme.css"/>
+    <!-- the icons are used both with and without theme -->
+    <link rel="stylesheet" href="lib/css/mwfIcons.css" />
+    <!-- myapp-theme can provide settings for size and color that override the default settings -->
+    <link rel="stylesheet" href="css/theme/myapp-theme.css"/>
+    <!-- the application specific style -->
+    <link rel="stylesheet" href="css/mystyle.css"/>
+
+
     <!-- leaflet - it seems that libs and css need to be accessed online rather than be provided locally, there is also some issue when using leaflet+offline manifest... -->
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
