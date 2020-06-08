@@ -116,7 +116,7 @@ function parseManifest(manifest) {
 
     // consider the cache syntax
     lines.forEach(function (l) {
-        if (l.startsWith("CACHE MANIFEST") || l.startsWith("#") || l == "") {
+        if (l.startsWith("CACHE MANIFEST") || l.startsWith("#") || l.trim() == "") {
             // ignore line
         }
         else if (l.startsWith("NETWORK:")) {
