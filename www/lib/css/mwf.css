@@ -234,47 +234,49 @@ header button, footer button, header input[type=submit], footer[type=submit] {
     height: 100%;
 }
 
-/* these are new alignment rules using flexbox rather than float - note that if a row contains both left-aligned and right-aligned elements, then the last left-aligned element must be declared as mwf-right-fill. For h1 in headers, we set this property by default */
+/* SKIP THIS as it it not clean: these are new alignment rules using flexbox rather than float - note that if a row contains both left-aligned and right-aligned elements, then the last left-aligned element must be declared as mwf-right-fill. For h1 in headers, we set this property by default */
 
 /* add mwf-alignbox for setting alignment environments manually */
 
-header, footer, li, .mwf-alignbox {
-    display: flex;
-    /*justify-content: space-between;*/
-}
+/*header, footer, li, .mwf-alignbox {*/
+/*    display: flex;*/
+/*    !*justify-content: space-between;*!*/
+/*}*/
 
-header h1 {
-    margin-right: auto;
-}
+/* remove the flexbox-based realisation of alignment as it is not clean */
+
+/*header h1 {*/
+/*    margin-right: auto;*/
+/*}*/
 
 .mwf-left-align {
-    /*float: left;*/
-    justify-content: flex-start;
+    float: left;
+    /*justify-content: flex-start;*/
 }
 
 .mwf-right-align {
-    /*float: right;*/
-    justify-content: flex-end;
+    float: right;
+    /*justify-content: flex-end;*/
 }
 
-.mwf-right-align:first-child {
-    margin-left: auto;
-}
+/*.mwf-right-align:first-child {*/
+/*    margin-left: auto;*/
+/*}*/
 
-.mwf-right-fill {
-    margin-right: auto;
-}
+/*.mwf-right-fill {*/
+/*    margin-right: auto;*/
+/*}*/
 
-.mwf-left-fill {
-    margin-left: auto;
-}
+/*.mwf-left-fill {*/
+/*    margin-left: auto;*/
+/*}*/
 
 /* end of flex box based alignment */
 
 /* these classes allow to realise alignment with floating */
 
 .mwf-alignbox-inline {
-    display: inline-flex;
+    /*display: inline-flex;*/
 }
 
 .mwf-left-align-float {
@@ -425,7 +427,7 @@ header h1 {
 
 .mwf-buttonbar {
     width: 100%;
-    display: inline-flex;
+    /*display: inline-flex;*/
 }
 
 .mwf-buttonbar:first-of-type {
@@ -832,7 +834,7 @@ body.mwf-loaded-app {
 /* enforce text ellipsis in headings */
 
 .mwf-view h2.mwf-dyncontent, .mwf-view h1.mwf-dyncontent, .mwf-dialog h2.mwf-dyncontent {
-    display: inline-block;
+    /*display: inline-block;*/
     max-width: 80%;
     white-space: nowrap;
     overflow: hidden;

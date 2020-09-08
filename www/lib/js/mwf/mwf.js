@@ -38,6 +38,8 @@ var GLOBAL = {};
 function cancelClickPropagation(e) {
     if (e.eventPhase != Event.CAPTURING_PHASE) {
         e.stopPropagation();
+        // we also need to cancel the immediate propagation
+        e.stopImmediatePropagation();
     }
 }
 
@@ -889,8 +891,6 @@ class ViewController {
             // we set a listener on the menu element that listens to list item selection - TODO: also realise the one-listener solution for the other menus (sidemnu, actionmenu)
             var listitemMenuItemSelectedListener = function (event) {
 
-                this.hideDialog();
-
                 function lookupTarget(node) {
                     if (node.classList.contains("mwf-listitem-menu")) {
                         console.log("we already reached the root of the menu. Click does not seem to have selected a menu item...");
@@ -905,6 +905,8 @@ class ViewController {
 
                 var targetItem = lookupTarget(event.target);
                 if (targetItem) {
+                    // only hide the dialog if an item has been selected (clicking outside of the dialog area will hide the dialog, too)
+                    this.hideDialog();
                     // we feedback which menu item for which item of which listview has been selected...
                     this.onListItemMenuItemElementSelected(targetItem, listitem, listview);
                 }

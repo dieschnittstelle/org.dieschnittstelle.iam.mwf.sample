@@ -259,8 +259,8 @@
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
             <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}Editieren: {{item.name}}{{else}}Neue Notiz{{/if}}</h2>
-            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
             <button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
         </header>
         <div class="mwf-body mwf-fabcontainer">
             <form id="notesEditForm" on-submit="submitNoteForm">
@@ -320,8 +320,8 @@
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
             <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{item.name}}</h2>
-            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
             <button class="mwf-right-align mwf-imgbutton mwf-img-pencil" on-click="editNote"></button>
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
         </header>
         <div class="mwf-body">
             <div class="mwf-scrollview">
@@ -394,10 +394,10 @@
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
             <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}{{#if mode == 'edit'}}Editieren: {{/if}}{{item.name}}{{else}}Neuer Ort{{/if}}</h2>
-            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" data-mwf-id="deletePlaceAction"></button>
-            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
             {{#if mode == 'edit'}}<input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>{{/if}}
             {{#unless mode == 'edit'}}<button class="mwf-imgbutton mwf-img-pencil mwf-right-align" data-mwf-id="editPlaceAction" on-click="setEditMode"></button>{{/unless}}
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" data-mwf-id="deletePlaceAction"></button>
+            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
         </header>
         <div class="mwf-body">
             <!-- the map must not be placed inside of the form! -->
