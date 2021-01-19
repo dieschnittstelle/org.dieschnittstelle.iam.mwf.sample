@@ -38,6 +38,8 @@ var GLOBAL = {};
 function cancelClickPropagation(e) {
     if (e.eventPhase != Event.CAPTURING_PHASE) {
         e.stopPropagation();
+        // we also need to cancel the immediate propagation
+        e.stopImmediatePropagation();
     }
 }
 
@@ -92,6 +94,7 @@ function hideMenusAndDialogs() {
             dialog.classList.remove("mwf-shown");
             dialog.classList.add("mwf-hidden");
             dialog.onclick = null;
+            console.log("REFACVIEWS: adding transitionend for hiding menus and dialogs: ", this.dialog);
             addRemoveOnFadedToElement(dialog);
         }
     }
@@ -106,21 +109,44 @@ function hideMenusAndDialogs() {
     }
 }
 
+// we need the possibility to realise removing from outside, so we need to keep track of a map of listeners
+const removeOnFadedListenerMap = new Map();
+
+function trackRemoveOnFadedListenerForElement(el,listener) {
+    removeOnFadedListenerMap.set(el,listener);
+}
+
+function getRemoveOnFadedListenerForElement(el,listener) {
+    return removeOnFadedListenerMap.get(el);
+}
+
 function addRemoveOnFadedToElement(el) {
     if (el) {
-        console.debug("addRemoveOnFadedToElement(): ", el);
+        console.debug("REFACVIEWS: addRemoveOnFadedToElement(): ", el);
         // we remove the view on transitionend
         const removeOnFaded = () => {
             el.removeEventListener("transitionend",removeOnFaded);
             if (el.parentNode) {
-                console.log("transitionend(): remove element from parent: ",el);
+                console.log("REFACVIEWS: transitionend(): remove element from parent: ",el);
                 el.parentNode.removeChild(el);
             }
             else {
-                console.log("transitionend(): remove element from parent not possible as parent has not been set");
+                console.log("REFACVIEWS: transitionend(): remove element from parent not possible as parent has not been set");
             }
         }
         el.addEventListener("transitionend",removeOnFaded);
+        trackRemoveOnFadedListenerForElement(el,removeOnFaded);
+    }
+}
+
+function removeRemoveOnFadedFromElement(el) {
+    const removeOnFadedListener = getRemoveOnFadedListenerForElement(el);
+    if (removeOnFadedListener) {
+        console.info("REFACVIEWS: removeRemoveOnFadedFromElement(): remove transitionend listener from element without listener having been run (which will be the case if a view is obsolete):", el);
+        el.removeEventListener("transitionend",removeOnFadedListener);
+    }
+    else {
+        console.warn("REFACVIEWS: removeRemoveOnFadedFromElement(): no transitionend listener specified on element. Clarify why function has been called.", el);
     }
 }
 
@@ -186,14 +212,18 @@ function TemplateProxy(ractive) {
 }
 
 function applyDatabinding(root, body, data) {
+    // TODO: there is an issue that for template-wrapping divs, the empty div itself might be attached again to the root
+    console.log("applyDatabinding(): using template body and root children: " + body, root.children.length);
     var ractive = new Ractive({
         el: root,
         template: body,
         data: data
     });
+    console.log("applyDatabinding(): after template application children of root are ", root.children.length, root);
     // we add the ractive object as a handle to the root in order to do updates
     root.viewProxy = new TemplateProxy(ractive);
     touchEnableOffspring(root);
+    console.log("applyDatabinding(): after touch enablement, children of root are ", root.children.length, root);
 }
 
 function ApplicationState() {
@@ -256,7 +286,7 @@ function ApplicationState() {
     // remove the active view controller
     this.popViewController = function (returnData, returnStatus) {
         var vc = activeViewControllers.pop();
-        console.log("popped view controller: " + vc.root.id + ". Will call onpause+onstop");
+        console.log("REFACVIEWS: popViewController(): " + vc.root.id + ". Will call onpause+onstop", vc);
         // we first pause and then stop
         vc.onpause().then(function () {
             // we invoke the onstop method on the vc
@@ -278,11 +308,13 @@ function ApplicationState() {
                         if (currentViewVC.onReturnFromSubview) {
                             currentViewVC.onReturnFromSubview(vc.root.id, returnData, returnStatus).then(function (goahead) {
                                 if (goahead != false) {
+                                    console.log("REFACVIEWS: onReturnFromSubview(): continuing regularly " + currentViewVC.root.id);
                                     currentViewVC.onresume().then(function () {
                                     });
                                 }
                                 else {
-                                    console.warn("onReturnFromSubview() of " + currentViewVC.root.id + " blocks resuming view by returning false. Supposedly, this is intended in order to skip the view.")
+                                    console.info("REFACVIEWS: onReturnFromSubview(): won't continue display of currentview " + currentViewVC.root.id + ". Continuation is blocked.");
+                                    removeRemoveOnFadedFromElement(currentViewVC.root);
                                 }
                             });
                         } else {
@@ -859,8 +891,6 @@ class ViewController {
             // we set a listener on the menu element that listens to list item selection - TODO: also realise the one-listener solution for the other menus (sidemnu, actionmenu)
             var listitemMenuItemSelectedListener = function (event) {
 
-                this.hideDialog();
-
                 function lookupTarget(node) {
                     if (node.classList.contains("mwf-listitem-menu")) {
                         console.log("we already reached the root of the menu. Click does not seem to have selected a menu item...");
@@ -875,6 +905,8 @@ class ViewController {
 
                 var targetItem = lookupTarget(event.target);
                 if (targetItem) {
+                    // only hide the dialog if an item has been selected (clicking outside of the dialog area will hide the dialog, too)
+                    this.hideDialog();
                     // we feedback which menu item for which item of which listview has been selected...
                     this.onListItemMenuItemElementSelected(targetItem, listitem, listview);
                 }
@@ -1045,10 +1077,16 @@ class ViewController {
 
         this.root.onclick = null;
 
-        this.lcstatus = CONSTANTS.LIFECYCLE.PAUSED;
+        // REFACVIEWS: we need to check the previ
+        if (this.lcstatus != CONSTANTS.LIFECYCLE.OBSOLETE) {
+            console.log("REFACVIEWS: adding transitionend to non obsolete controller with lifecycle: ", this.lcstatus, this.root);
+            addRemoveOnFadedToElement(this.root);
+        }
+        else {
+            console.log("REFACVIEWS: skip adding transitionend to obsolete controller: ", this.root);
+        }
 
-        // REFACVIEWS:
-        addRemoveOnFadedToElement(this.root);
+        this.lcstatus = CONSTANTS.LIFECYCLE.PAUSED;
     }
 
     // the four lifecycle methods which we realise by setting class attributes
@@ -1323,7 +1361,7 @@ class ViewController {
     }
 
     previousView(returnData, returnStatus) {
-        console.log("previousView()");
+        console.log("REFACVIEWS: previousView(): " + this.root.id, this.root);
         applicationState.popViewController(returnData, returnStatus);
     }
 
@@ -1460,6 +1498,7 @@ class ViewController {
                 console.log("hideDialog(): prepare removal on faded for dialog without controller", this.dialog);
                 // REFACVIEWS:
                 // we remove the dialog on transitionend
+                console.log("REFACVIEWS: adding transitionend for dialog: ", this.dialog);
                 addRemoveOnFadedToElement(this.dialog);
                 this.dialog.classList.add("mwf-hidden");
                 this.dialog = null;
@@ -1883,7 +1922,11 @@ function extractTopLevelViews() {
             }
         }
         else {
-            console.warn("extractTopLevelViews(): found element without id: ", e);
+            console.info("extractTopLevelViews(): found element without id: ", e);
+            if (e.classList.contains("mwf-view-initial")) {
+                console.log("extractTopLevelViews(): element is initial view: ", initialView);
+                initialView = e;
+            }
         }
     });
 
@@ -2154,9 +2197,10 @@ function onloadApplication() {
             document.querySelector("body").classList.add("mwf-loaded-app");
 
             // we set a listener that reacts to changes of the window location
-            window.onbeforeunload = function () {
-                confirm("Do you really want to leave this app?");
-            };
+            // comment because this is blocked by the browsers
+            // window.onbeforeunload = function () {
+            //     confirm("Do you really want to leave this app?");
+            // };
 
             // push the initial view controller to the application state
             applicationState.pushViewController(initialViewController);

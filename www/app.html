@@ -10,11 +10,36 @@
     <!-- include the manifest once the app is pwa ready -->
     <!--<link rel="manifest" href="pwa/webapp-manifest.json">-->
     <!-- load the styles -->
+
+<!--    &lt;!&ndash; these are the styles without theme - comment out/in the whole block for de/activating &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="lib/css/normalize.css"/>-->
+<!--    <link rel="stylesheet" href="lib/css/mwf.css"/>-->
+<!--    <link rel="stylesheet" href="lib/css/mwfIcons.css"/>-->
+
+    <!-- these are the styles with theme - comment out/in the whole block for de/activating -->
     <link rel="stylesheet" href="lib/css/normalize.css"/>
-    <link rel="stylesheet" href="lib/css/mwf.css"/>
-    <link rel="stylesheet" href="lib/css/mwfIcons.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-default-theme.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-with-theme.css"/>
+    <!-- the icons are used both with and without theme -->
+    <link rel="stylesheet" href="lib/css/mwfIcons.css" />
+    <!-- myapp-theme can provide settings for size and color that override the default settings -->
+    <link rel="stylesheet" href="css/theme/myapp-theme.css"/>
+
     <!-- the application specific style -->
     <link rel="stylesheet" href="css/cta.css"/>
+
+
+    <link rel="stylesheet" href="lib/css/normalize.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-default-theme.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-with-theme.css"/>
+    <!-- the icons are used both with and without theme -->
+    <link rel="stylesheet" href="lib/css/mwfIcons.css" />
+    <!-- myapp-theme can provide settings for size and color that override the default settings -->
+    <link rel="stylesheet" href="css/theme/myapp-theme.css"/>
+    <!-- the application specific style -->
+    <link rel="stylesheet" href="css/cta.css"/>
+
+
     <!-- leaflet - it seems that libs and css need to be accessed online rather than be provided locally, there is also some issue when using leaflet+offline manifest... -->
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
@@ -234,12 +259,12 @@
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
             <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}Editieren: {{item.name}}{{else}}Neue Notiz{{/if}}</h2>
-            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
             <button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
         </header>
         <div class="mwf-body mwf-fabcontainer">
             <form id="notesEditForm" on-submit="submitNoteForm">
-                <fieldset>
+                <fieldset class="mwf-material">
                     <legend>
                         Titel
                     </legend>
@@ -252,7 +277,7 @@
                     <!--<input type='radio' name='{{item.contentType}}' value='file' id="notesContentTypeFile" checked="checked"><label for="notesContentTypeFile">Datei</label>-->
                 <!--</fieldset>-->
                 <p></p>
-                <fieldset>
+                <fieldset class="mwf-material">
                     <legend>
                         Beschreibung
                     </legend>
@@ -295,8 +320,8 @@
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
             <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{item.name}}</h2>
-            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
             <button class="mwf-right-align mwf-imgbutton mwf-img-pencil" on-click="editNote"></button>
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
         </header>
         <div class="mwf-body">
             <div class="mwf-scrollview">
@@ -369,16 +394,16 @@
             <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
             </button>
             <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}{{#if mode == 'edit'}}Editieren: {{/if}}{{item.name}}{{else}}Neuer Ort{{/if}}</h2>
-            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" data-mwf-id="deletePlaceAction"></button>
-            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
             {{#if mode == 'edit'}}<input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>{{/if}}
             {{#unless mode == 'edit'}}<button class="mwf-imgbutton mwf-img-pencil mwf-right-align" data-mwf-id="editPlaceAction" on-click="setEditMode"></button>{{/unless}}
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" data-mwf-id="deletePlaceAction"></button>
+            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
         </header>
         <div class="mwf-body">
             <!-- the map must not be placed inside of the form! -->
             <div class="mwf-mapcontainer"></div>
             <form id="placesEditForm" on-submit="submitPlaceForm">
-                <fieldset>
+                <fieldset class="mwf-material">
                     <legend>
                         Name
                     </legend>
