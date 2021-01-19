@@ -54,8 +54,7 @@ class ContentTaggerApplication extends mwf.Application {
         console.log("ContentTaggerApplication.oncreate(): done.");
 
         // include service workers
-        // this.initialiseServiceWorkers();
-
+        this.initialiseServiceWorkers();
     }
 
     initialiseCRUD(scope,em) {

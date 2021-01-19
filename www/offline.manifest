@@ -1,0 +1,140 @@
+CACHE MANIFEST
+
+# v0.0.21 - 2021-01-19-3
+# This is a comment.
+
+# ATTENTION: IF THIS FILE REFERENCES ANY UNAVAILABLE RESSOURCES, NO CACHE WILL BE CREATED!!!
+
+##############
+# framework
+##############
+CACHE:
+
+# framework: css resources
+lib/css/mwf.css
+lib/css/mwfIcons.css
+lib/css/normalize.css
+
+# framework: icons used by the mwf style (and some more)
+lib/css/img/glyphicons/png/glyphicons-433-plus.png
+lib/css/img/glyphicons/png/glyphicons-517-menu-hamburger.png
+lib/css/img/glyphicons/png/glyphicons-208-remove.png
+lib/css/img/glyphicons/png/glyphicons-12-camera.png
+lib/css/img/glyphicons/png/glyphicons-207-ok.png
+lib/css/img/glyphicons/png/glyphicons-212-arrow-right.png
+lib/css/img/glyphicons/png/glyphicons-281-settings.png
+lib/css/img/glyphicons/png/glyphicons-750-hash.png
+lib/css/img/glyphicons/png/glyphicons-739-photo-album.png
+lib/css/img/glyphicons/png/glyphicons-30-notes-2.png
+lib/css/img/glyphicons/png/glyphicons-51-link.png
+lib/css/img/glyphicons/png/glyphicons-243-map-marker.png
+lib/css/img/glyphicons/png/glyphicons-31-pencil.png
+lib/css/img/glyphicons/png/glyphicons-518-option-vertical.png
+lib/css/img/glyphicons/png/glyphicons-211-arrow-left.png
+lib/css/img/glyphicons/png/glyphicons-213-arrow-down.png
+lib/css/img/glyphicons/png/glyphicons-214-arrow-up.png
+lib/css/img/glyphicons/png/glyphicons-513-paste.png
+lib/css/img/glyphicons/png/glyphicons-17-bin.png
+lib/css/img/glyphicons/png/glyphicons-631-washing-machine.png
+lib/css/img/glyphicons/png/glyphicons-503-map.png
+lib/css/img/glyphicons/png/glyphicons-170-record.png
+lib/css/img/glyphicons/png/glyphicons-171-step-backward.png
+lib/css/img/glyphicons/png/glyphicons-172-fast-backward.png
+lib/css/img/glyphicons/png/glyphicons-173-rewind.png
+lib/css/img/glyphicons/png/glyphicons-174-play.png
+lib/css/img/glyphicons/png/glyphicons-175-pause.png
+lib/css/img/glyphicons/png/glyphicons-176-stop.png
+lib/css/img/glyphicons/png/glyphicons-177-forward.png
+lib/css/img/glyphicons/png/glyphicons-178-fast-forward.png
+lib/css/img/glyphicons/png/glyphicons-179-step-forward.png
+lib/css/img/glyphicons/png/glyphicons-82-refresh.png
+lib/css/img/glyphicons/png/glyphicons-157-show-thumbnails.png
+lib/css/img/glyphicons/png/glyphicons-115-list.png
+lib/css/img/glyphicons/png/glyphicons-444-floppy-disk.png
+lib/css/img/glyphicons/png/glyphicons-221-play-button.png
+lib/css/img/glyphicons/png/glyphicons-387-log-in.png
+lib/css/img/glyphicons/png/glyphicons-388-log-out.png
+
+# themes
+lib/css/theme/mwf-default-theme.css
+lib/css/theme/mwf-with-theme.css
+
+# framework main
+lib/js/framework-modules.js
+
+# framework: external js libs
+lib/js/external/ractive.min.js
+lib/js/external/require.js
+
+# framework: js libs
+lib/js/mwf/mwf.js
+lib/js/mwf/mwfEventhandling.js
+lib/js/mwf/mwfUtils.js
+
+lib/js/mwf/controller/mwfGenericDialogTemplateViewController.js
+lib/js/mwf/controller/mwfMapHolderLeaflet.js
+
+lib/js/mwf/crud/mwfEntityManager.js
+lib/js/mwf/crud/mwfGenericCRUDImplLocal.js
+lib/js/mwf/crud/mwfGenericCRUDImplRemote.js
+lib/js/mwf/crud/mwfIndexeddb.js
+lib/js/mwf/crud/mwfXhr.js
+
+
+#######################
+# application skeleton
+#######################
+CACHE:
+
+# js resources
+js/Main.js
+
+# app.html
+app.html
+
+pwa/webapp-manifest.json
+
+##################################
+# application specfific resources
+##################################
+CACHE:
+css/cta.css
+css/theme/myapp-theme.css
+
+# application
+js/ContentTaggerApplication.js
+# entities
+js/model/Entities.js
+# map view
+js/controller/MapViewController.js
+# notes
+js/controller/NotesEditviewViewController.js
+js/controller/NotesOverviewViewController.js
+js/controller/NotesReadviewViewController.js
+# places
+js/controller/PlacesEditviewViewController.js
+js/controller/PlacesOverviewViewController.js
+# sidemenu
+js/controller/SidemenuViewController.js
+# tags
+js/controller/TaggableOverviewViewController.js
+js/controller/TagSelectionDialogViewController.js
+js/controller/TagsOverviewViewController.js
+
+# this is for testing error handling
+#js/direm.js
+
+########################
+# network resources
+########################
+
+NETWORK:
+api
+content
+available
+http://lorempixel.com
+http://cdn.leafletjs.com
+http://a.tile.osm.org
+http://b.tile.osm.org
+http://c.tile.osm.org
+http://d.tile.osm.org
