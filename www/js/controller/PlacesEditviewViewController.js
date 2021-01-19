@@ -56,7 +56,7 @@ export default class PlacesEditviewViewController extends mwf.ViewController {
             this.placeItem.content = defaultContent;
             this.viewProxy.update({item: this.placeItem});
         });
-        this.root.querySelector("[data-mwf-id='deletePlaceAction']", () => {
+        this.root.querySelector("[data-mwf-id='deletePlaceAction']").onclick = () => {
             if (this.placeItem.created) {
                 this.placeItem.delete(() => {
                     console.log("deletePlace() finished.");
@@ -68,7 +68,7 @@ export default class PlacesEditviewViewController extends mwf.ViewController {
             else {
                 this.previousView();
             }
-        });
+        };
         this.viewProxy.bindAction("addTag", () => {
             this.showDialog("selectTagDialog", {tagableItem: this.placeItem, receiverId: this.root.id});
         });
