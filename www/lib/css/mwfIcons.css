@@ -1,0 +1,164 @@
+.mwf-img-plus {
+    background: url("img/png/add_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 30px 30px;
+}
+
+.mwf-img-sandwich {
+    background: url("img/png/menu_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-remove {
+    background: url("img/png/close_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-camera {
+    background: url("img/png/photo_camera_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-ok {
+    background: url("img/png/done_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-rightarrow {
+    background: url("img/png/arrow_right_alt_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-settings {
+    background: url("img/png/settings_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-hash {
+    background: url("img/png/tag_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-photo-album {
+    background: url("img/png/photo_album_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-notes {
+    background: url("img/png/content_paste_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-link {
+    background: url("img/png/link_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-map-marker {
+    background: url("img/png/location_on_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-pencil {
+    background: url("img/png/edit_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* for some reason, this button gets distorted when specifying background-size, so we unset it here */
+.mwf-img-options-vertical, .mwf-imgbutton.mwf-img-options-vertical {
+    background: url("img/png/more_vert_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: unset;
+}
+
+.mwf-img-backward {
+    background: url("img/png/arrow_left_alt_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-paste {
+    background: url("img/png/content_paste_go_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-delete {
+    background: url("img/png/delete_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-destroy {
+    background: url("img/png/local_laundry_service_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-map {
+    background: url("img/png/map_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-play {
+    background: url("img/png/play_arrow_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-refresh {
+    background: url("img/png/sync_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-tiles {
+    background: url("img/png/grid_view_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-list {
+    background: url("img/png/list_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-disk {
+    background: url("img/png/save_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-play-button {
+    background: url("img/png/play_circle_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-log-in {
+    background: url("img/png/login_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-img-log-out {
+    background: url("img/png/logout_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}

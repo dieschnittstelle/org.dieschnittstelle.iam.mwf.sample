@@ -1,0 +1,79 @@
+:root {
+    /* TODO: modify those entries that shall be adapted */
+
+    /*!* general colors *!*/
+    /*--var-mwf-primary-text-color: black;*/
+    /*--var-mwf-dialog-text-color: black;*/
+    /*--var-mwf-primary-line-color: limegreen;*/
+    /*--var-mwf-primary-area-color: limegreen;*/
+    /*--var-mwf-error-color: red;*/
+    /*--var-mwf-default-spacing: 10px;*/
+
+    /*!* general font sizes *!*/
+    /*--var-mwf-normal-font-size: 12pt;*/
+    /*--var-mwf-larger-font-size: 16pt;*/
+    /*--var-mwf-smaller-font-size: 10pt;*/
+
+    /*!* settings for the header *!*/
+    /*--var-mwf-header-height: 40px;*/
+    /*--var-mwf-header-background-color: rgb(240,240,240);*/
+    /*--var-mwf-header-color: black;*/
+    /*--var-mwf-header-separator-height: 2px;*/
+    /*--var-mwf-header-separator-color: var(--var-mwf-primary-line-color);*/
+    /*--var-mwf-header-font-size: 16pt;*/
+
+    /*!* settings for the footer *!*/
+    /*--var-mwf-footer-height: 40px;*/
+    /*--var-mwf-footer-background-color: white;*/
+    /*--var-mwf-footer-separator-height: 2px;*/
+    /*--var-mwf-footer-separator-color: var(--var-mwf-primary-line-color);*/
+
+    /*!* main element and body *!*/
+    /*--var-mwf-main-background-color: white;*/
+
+    /*!* imgbuttons *!*/
+    /*--var-mwf-imgbutton-size: 40px;*/
+    /*--var-mwf-imgbutton-imgsize: 28px;*/
+    /*--var-mwf-imgbutton-touched-background-color: gray;*/
+    /*--var-mwf-imgbutton-touched-opacity: 0.5;*/
+    /*--var-mwf-imgbutton-invert: 30%;*/
+    /*--var-mwf-icon-invert: 50%;*/
+    /*--var-mwf-fab-color: var(--var-mwf-primary-area-color);*/
+    /*--var-mwf-fab-invert: 90%;*/
+
+    /*!* lists *!*/
+    /*--var-mwf-listitem-height: 50px;*/
+    /*--var-mwf-listitem-spacing-horizontal: 5px;*/
+    /*--var-mwf-listitem-spacing-vertical: 10px;*/
+    /*--var-mwf-listitem-separator-height: 1px;*/
+    /*--var-mwf-listitem-separator-style: solid;*/
+    /*--var-mwf-listitem-separator-color: rgb(120, 120, 120);*/
+    /*--var-mwf-listitem-titleblock-h2-font-size: var(--var-mwf-larger-font-size);*/
+    /*--var-mwf-listitem-titleblock-h3-font-size: var(--var-mwf-smaller-font-size);*/
+    /*--var-mwf-listitem-titleblock-h3-uplift: 0px;*/
+
+    /*!* settings for dialogs *!*/
+    /*--var-mwf-dialog-background-color: white;*/
+    /*--var-mwf-dialog-border-color: black;*/
+    /*--var-mwf-dialog-border-width: 1px;*/
+    /*--var-mwf-dialog-button-font-size: 14pt;*/
+    /*--var-mwf-listitem-menu-background-color: white;*/
+    /*--var-mwf-listitem-menu-heading-height: 40px;*/
+    /*--var-mwf-listitem-menu-heading-font-size: var(--var-mwf-larger-font-size);*/
+    /*--var-mwf-listitem-menu-border-color: black;*/
+    /*--var-mwf-listitem-menu-border-width: 1px;*/
+    /*--var-mwf-toast-background-color: gray;*/
+    /*--var-mwf-toast-color: white;*/
+
+    /*!* settings for forms *!*/
+    /*--var-mwf-form-input-color: var(--var-mwf-primary-line-color);*/
+    /*--var-mwf-form-input-line-height: 2px;*/
+    /*--var-mwf-form-spacing-horizontal: 5px;*/
+    /*--var-mwf-form-spacing-vertical: 10px;*/
+
+    /*!* settings for sidemenu *!*/
+    /*--var-mwf-sidemenu-background-color: rgb(240,240,240);*/
+    /*--var-mwf-sidemenu-color: black;*/
+    /*--var-mwf-sidemenu-icon-invert: var(--var-mwf-icon-invert);*/
+
+}

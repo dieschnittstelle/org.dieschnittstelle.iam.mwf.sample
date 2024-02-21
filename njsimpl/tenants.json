@@ -1,0 +1,11 @@
+{
+  "tenant-1": {
+    "name": "testuser-1"
+  },
+  "tenant-2": {
+    "name": "testuser-2"
+  },
+  "tenant-3": {
+    "name": "testuser 3"
+  }
+}

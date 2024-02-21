@@ -1,0 +1,79 @@
+:root {
+    /* general colors */
+    --var-mwf-primary-text-color: white;
+    --var-mwf-dialog-text-color: black;
+    --var-mwf-primary-line-color: limegreen;
+    --var-mwf-primary-area-color: limegreen;
+    --var-mwf-error-color: red;
+    --var-mwf-default-spacing: 10px;
+
+    /* general font sizes */
+    --var-mwf-normal-font-size: 12pt;
+    --var-mwf-larger-font-size: 16pt;
+    --var-mwf-smaller-font-size: 10pt;
+
+    /* settings for the header */
+    --var-mwf-header-height: 40px;
+    --var-mwf-header-background-color: rgb(60,60,60);
+    --var-mwf-header-color: white;
+
+    --var-mwf-header-separator-height: 0px;
+    --var-mwf-header-separator-color: transparent;
+    --var-mwf-header-font-size: 16pt;
+    /* settings for the footer */
+    --var-mwf-footer-height: 40px;
+    --var-mwf-footer-background-color: black;
+
+    --var-mwf-footer-separator-height: 0px;
+    --var-mwf-footer-separator-color: transparent;
+
+    /* main element and body */
+    --var-mwf-main-background-color: rgb(45,45,45);
+
+    /* imgbuttons */
+    --var-mwf-imgbutton-size: 40px;
+    --var-mwf-imgbutton-imgsize: 28px;
+    --var-mwf-imgbutton-touched-background-color: rgb(240,240,240);;
+    --var-mwf-imgbutton-touched-opacity: 0.5;
+    --var-mwf-imgbutton-invert: 90%;
+    --var-mwf-icon-invert: 90%;
+    --var-mwf-fab-color: var(--var-mwf-primary-area-color);
+    --var-mwf-fab-invert: 90%;
+
+    /* lists */
+    --var-mwf-listitem-height: 50px;
+    --var-mwf-listitem-spacing-horizontal: 5px;
+    --var-mwf-listitem-spacing-vertical: 5px;
+    --var-mwf-listitem-separator-height: 1px;
+    --var-mwf-listitem-separator-style: solid;
+    --var-mwf-listitem-separator-color: rgb(120, 120, 120);
+    --var-mwf-listitem-titleblock-h2-font-size: var(--var-mwf-larger-font-size);
+    --var-mwf-listitem-titleblock-h3-font-size: var(--var-mwf-smaller-font-size);
+    --var-mwf-listitem-titleblock-h3-uplift: 0px;
+    --var-mwf-listitem-imgsize: 50px;
+
+    /* settings for dialogs */
+    --var-mwf-dialog-background-color: rgb(240, 240, 240);
+    --var-mwf-dialog-border-color: white;
+    --var-mwf-dialog-border-width: 0;
+    --var-mwf-dialog-button-font-size: 14pt;
+    --var-mwf-listitem-menu-background-color: rgb(70, 70, 70);
+    --var-mwf-listitem-menu-heading-height: 40px;
+    --var-mwf-listitem-menu-heading-font-size: var(--var-mwf-larger-font-size);
+    --var-mwf-listitem-menu-border-color: rgb(70, 70, 70);
+    --var-mwf-listitem-menu-border-width: 0;
+    --var-mwf-toast-background-color: gray;
+    --var-mwf-toast-color: white;
+
+    /* settings for forms */
+    --var-mwf-form-input-color: var(--var-mwf-primary-line-color);
+    --var-mwf-form-input-line-height: 2px;
+    --var-mwf-form-spacing-horizontal: 10px;
+    --var-mwf-form-spacing-vertical: 10px;
+
+    /*!* settings for sidemenu - not used in tutorial, see for an example usage https://github.com/dieschnittstelle/org.dieschnittstelle.iam.mwf.sample *!*/
+    --var-mwf-sidemenu-background-color: rgb(70,70,70);
+    --var-mwf-sidemenu-color: white;
+    --var-mwf-sidemenu-icon-invert: var(--var-mwf-icon-invert);
+
+}

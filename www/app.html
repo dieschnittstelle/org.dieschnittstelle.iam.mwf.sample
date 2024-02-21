@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en" manifest="offline.manifest">
+<head>
+    <meta charset="UTF-8">
+    <title>MWF DEMO</title>
+    <!-- this tag avoids scaling the view on display -->
+    <meta name="viewport" content="width=device-width, minimal-ui, initial-scale=1.0, maximum-scale=1.0, user-scalable=1"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- include the manifest once the app is pwa ready -->
+    <link rel="manifest" href="pwa/webapp-manifest.json">
+    <!-- load the styles -->
+
+<!--    &lt;!&ndash; these are the styles without theme - comment out/in the whole block for de/activating &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="lib/css/normalize.css"/>-->
+<!--    <link rel="stylesheet" href="lib/css/mwf.css"/>-->
+<!--    <link rel="stylesheet" href="lib/css/mwfIcons.css"/>-->
+
+    <!-- these are the styles with theme - comment out/in the whole block for de/activating -->
+    <link rel="stylesheet" href="lib/css/normalize.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-default-theme.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-with-theme.css"/>
+    <!-- the icons are used both with and without theme -->
+    <link rel="stylesheet" href="lib/css/mwfIcons.css" />
+    <!-- myapp-theme can provide settings for size and color that override the default settings -->
+    <link rel="stylesheet" href="css/theme/myapp-theme.css"/>
+
+    <!-- the application specific style -->
+    <link rel="stylesheet" href="css/cta.css"/>
+
+
+    <link rel="stylesheet" href="lib/css/normalize.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-default-theme.css"/>
+    <link rel="stylesheet" href="lib/css/theme/mwf-with-theme.css"/>
+    <!-- the icons are used both with and without theme -->
+    <link rel="stylesheet" href="lib/css/mwfIcons.css" />
+    <!-- myapp-theme can provide settings for size and color that override the default settings -->
+    <link rel="stylesheet" href="css/theme/myapp-theme.css"/>
+    <!-- the application specific style -->
+    <link rel="stylesheet" href="css/cta.css"/>
+
+    <!-- leaflet - it seems that libs and css need to be accessed online rather than be provided locally, there is also some issue when using leaflet+offline manifest... -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>    <!-- ractive templating engine -->
+    <script src="lib/js/external/ractive.min.js"></script>
+    <!-- load the application resources and initialise the mwf framework -->
+    <script type="module" src="js/Main.js"></script>
+</head>
+<body class="cta-layout-light mwf-loading-app" data-mwf-application="ContentTaggerApplication">
+<!-- onload="onloadApplication()"> -->
+
+<!-------------
+    Example: TODO: add listview and add instructions for adapting this view to some new scenario
+  ------------->
+
+<div class="mwf-view" id="exampleOverview" data-mwf-viewcontroller="ExampleViewController">
+    <!-- action menu example. the class mwf-hide-on-disabled results in disabled items not being displayed -->
+    <!-- for disabling, we use mwf-disabled? might be better to do it in a more standard way... need to temporarily remove the event handlers -->
+    <!-- action menu items may either specify a function that will be called on the current view controller (data-mwf-targetaction) or my specify a view transition by setting a targetview -->
+    <div class="mwf-actionmenu">
+        <ul>
+            <!-- call an action function on the view controller -->
+            <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="action1">Action 1</li>
+            <!-- initiate a view transition -->
+            <li class="mwf-li-singletitle mwf-menu-item mwf-hide-on-disabled" data-mwf-targetview="detailview">Action
+                2
+            </li>
+            <!-- customised action handling on the view controller -->
+            <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="action3">Action 3</li>
+            <!-- customised action handling on the view controller -->
+            <li class="mwf-li-singletitle mwf-disabled" data-mwf-id="action4">Action 4</li>
+        </ul>
+    </div>
+    <div id="exampleItemMenu" class="mwf-listitem-menu mwf-dialog mwf-popup">
+        <header>
+            <h2>irum lopsem</h2>
+        </header>
+        <div class="mwf-dialog-body">
+            <ul>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="update">Aktualisieren</li>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="delete">Löschen</li>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="addLocation">Location hinzufügen</li>
+            </ul>
+        </div>
+    </div>
+    <!-- a dialog that is used by the above view -->
+    <div class="mwf-dialog mwf-popup" id="photosItemMenu2"> <!-- add: mwf-shown -->
+        <div class="mwf-dialog-body">
+            <form id="itemDialog-updateForm">
+                <fieldset>
+                    <legend>
+                        Titel
+                    </legend>
+                    <input autocomplete="off" class="mwf-autofocus mwf-dynvalue" id="itemDialog-title" type="text" placeholder="..."
+                           required="required"/>
+                </fieldset>
+                <input type="submit" value="Update"/>
+                <button id="itemDialog-delete">Delete</button>
+            </form>
+        </div>
+        <!-- <footer></footer> -->
+    </div>
+</div>
+
+<!-------------
+    Tags
+  ------------->
+
+<div class="mwf-view mwf-view-initial" id="tagsOverview" data-mwf-viewcontroller="TagsOverviewViewController">
+    <header>
+        <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+        </button>
+        <h2 class="mwf-left-align mwf-right-fill">Tagliste</h2>
+    </header>
+    <main class="mwf-fabcontainer">
+        <ul class="mwf-scrollview mwf-listview" data-mwf-listitem-view="listitem-tags-overview">
+            <li class="mwf-listitem mwf-li-singletitle mwf-template mwf-databind"
+                data-mwf-templatename="listitem-tags-overview" data-mwf-targetaction="showTag">
+                <h2 class="mwf-left-align mwf-li-titleblock mwf-right-fill">#{{name}}</h2>
+
+                <div class="mwf-right-align mwf-imgbutton mwf-img-pencil mwf-listitem-menu-control"></div>
+            </li>
+        </ul>
+        <div class="mwf-fab">
+            <button id="newTagAction" class="mwf-imgbutton mwf-img-plus">
+            </button>
+        </div>
+    </main>
+    <div class="mwf-dialog mwf-popup mwf-template mwf-databind" data-mwf-templatename="editTagDialog">
+        <div class="mwf-dialog-body">
+            <h2>{{#if created}}Tag ändern{{else}}Neuer Tag{{/if}}</h2>
+
+            <form id="tagNameInputForm">
+                <input name="name" autocomplete="off" class="mwf-autofocus" type="text" placeholder="Name des Tags"
+                       required="required" value="{{name}}"/>
+
+                <div class="mwf-buttonbar">
+                    <!-- type=button must be set in order to prevent that button click fires submit on the form -->
+                    <button class="mwf-left-align mwf-button {{#unless _id}}mwf-disabled{{/unless}}"
+                            id="deleteTagAction" type="button" disabled="{{#unless  created}}disabled{{/unless}}">Löschen
+                    </button>
+                    <input id="createTagAction" class="mwf-button-prio mwf-right-align mwf-button" type="submit"
+                           value="{{#if  created}}Ändern{{else}}Hinzufügen{{/if}}"/>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope mwf-right-fill">
+        </button>
+        <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
+        </button>
+    </footer>
+</div>
+
+<!-- this is an example for a view that is composed of various listviews which are rendered using a single template -->
+<div class="mwf-view" id="taggableOverview" data-mwf-viewcontroller="TaggableOverviewViewController">
+    <div class="mwf-template mwf-databind" data-mwf-templatename="taggableTemplate">
+        <header>
+            <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+            </button>
+            <h2 class="mwf-left-align mwf-dyncontent">#{{item.name}}</h2>
+        </header>
+        <div class="mwf-body">
+            <div class="mwf-scrollview">
+                {{#each groups:group}}
+                <ul class="mwf-listview">
+                    <li class="mwf-li-singletitle cta-itemcategory">
+                        <!-- here we display a heading with the item type icon and the nane -->
+                        {{#if type == 'Note'}}
+                        <span class="mwf-icon mwf-img-notes mwf-left-align"></span>
+                        <h2 class="mwf-left-align mwf-li-titleblock">Notizen</h2>
+                        {{else}}
+                        {{#if type == 'Place'}}
+                        <span class="mwf-icon mwf-img-map-marker mwf-left-align"></span>
+                        <h2 class="mwf-left-align mwf-li-titleblock">Orte</h2>
+                        {{else}}
+                        {{#if type == 'Link'}}
+                        <span class="mwf-icon mwf-img-link mwf-left-align"></span>
+                        <h2 class="mwf-left-align mwf-li-titleblock">Links</h2>
+                        {{else}}
+                        {{#if type == 'MediaItem'}}
+                        <span class="mwf-icon mwf-img-photo-album mwf-left-align"></span>
+                        <h2 class="mwf-left-align mwf-li-titleblock">Medien</h2>
+                        {{/if}}
+                        {{/if}}
+                        {{/if}}
+                        {{/if}}
+                    </li>
+                </ul>
+                <ul class="mwf-listview">
+                    {{#each contentItems:citem}}
+                    <li on-click="showContentItem" class="mwf-listitem mwf-li-singletitle" data-mwf-id="{{contentItems[citem]._id}}@{{type}}">
+                        <h2 class="mwf-dyncontent mwf-left-align mwf-li-titleblock mwf-right-fill">{{contentItems[citem].name}}</h2>
+                        <div class="mwf-right-align mwf-imgbutton mwf-img-options-vertical"></div>
+                    </li>
+                    {{/each}}
+                </ul>
+                {{/each}}
+            </div>
+        </div>
+        <footer>
+            <button class="mwf-back mwf-imgbutton mwf-img-backward mwf-left-align mwf-right-fill">
+            </button>
+            <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
+            </button>
+        </footer>
+    </div>
+</div>
+
+<!-------------
+    Notes
+  ------------->
+
+<div class="mwf-view" id="notesOverview" data-mwf-viewcontroller="NotesOverviewViewController">
+    <header>
+        <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+        </button>
+        <h2 class="mwf-left-align  mwf-right-fill">Notizen</h2>
+    </header>
+    <div class="mwf-body mwf-fabcontainer">
+        <ul class="mwf-listview mwf-scrollview" data-mwf-listitem-view="listitem-notes-overview" data-mwf-listitem-menu="notesItemMenu">
+            <li class="mwf-listitem mwf-li-title-subtitle mwf-template mwf-databind" data-mwf-targetview="notesReadview" data-mwf-templatename="listitem-notes-overview">
+                <div class="mwf-left-align mwf-li-titleblock mwf-dyncontent  mwf-right-fill"><h2>{{name}}</h2>
+                    <h3>{{lastModifiedDateString}} {{lastModifiedTimeString}}</h3></div>
+                <div class="mwf-right-align mwf-imgbutton mwf-img-options-vertical mwf-listitem-menu-control"></div>
+            </li>
+        </ul>
+        <div class="mwf-fab mwf-fab-fixed-main">
+            <button id="newNoteAction" class="mwf-imgbutton mwf-img-plus">
+            </button>
+        </div>
+    </div>
+    <footer>
+        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope  mwf-right-fill">
+        </button>
+        <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
+        </button>
+    </footer>
+    <div data-mwf-templatename="notesItemMenu" class="mwf-databind mwf-template mwf-listitem-menu mwf-dialog mwf-popup">
+        <header>
+            <h2 class="mwf-dyncontent">{{name}}</h2>
+        </header>
+        <div class="mwf-dialog-body">
+            <ul>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="deleteNote">Löschen</li>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetview="notesEditview">Editieren</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="mwf-view" data-mwf-viewcontroller="NotesEditviewViewController" id="notesEditview">
+    <!-- the following div is a mere template wrapper that will be removed when creating the view -->
+    <div class="mwf-template mwf-databind" data-mwf-templatename="notesEditviewTemplate">
+        <header>
+            <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+            </button>
+            <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}Editieren: {{item.name}}{{else}}Neue Notiz{{/if}}</h2>
+            <button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
+        </header>
+        <div class="mwf-body mwf-fabcontainer">
+            <form id="notesEditForm" on-submit="submitNoteForm">
+                <fieldset class="mwf-material">
+                    <legend>
+                        Titel
+                    </legend>
+                    <input class="mwf-autofocus" value="{{item.name}}" type="text" name="name"
+                           required="required" autocomplete="off"/>
+                </fieldset>
+                <!-- remove the local/upload option from the view for the time being -->
+                <!--<fieldset class="mwf-radiogroup">-->
+                    <!--<input type='radio' name='{{item.contentType}}' value='plain' id="notesContentTypePlain" checked="checked"><label for="notesContentTypePlain"></label>Text</label>-->
+                    <!--<input type='radio' name='{{item.contentType}}' value='file' id="notesContentTypeFile" checked="checked"><label for="notesContentTypeFile">Datei</label>-->
+                <!--</fieldset>-->
+                <p></p>
+                <fieldset class="mwf-material">
+                    <legend>
+                        Beschreibung
+                    </legend>
+                    <!--{{#if item.contentType == 'plain'}}-->
+                    <!-- textarea must not be realised as an empty tag -->
+                    <textarea rows="5" value="{{item.content}}"></textarea>
+                    <!--{{else}}-->
+                    <!--<textarea rows="5" disabled="disabled"></textarea>-->
+                    <!--{{/if}}-->
+                </fieldset>
+                <!--<input type="file" name="notesContent" value={{item.filecontent}} disabled="{{item.contentType == 'plain'}}"/>-->
+            </form>
+            <div class="mwf-bottom-align">
+                <fieldset class="cta-tagpane">
+                    <ul>
+                        {{#each item.tags}}
+                        <!-- note that the iterator "tag" will not be used as prefix inside of the iteration (vs., e.g., JSF)!!! -->
+                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align-float" on-click="removeTag"></span></li>
+                        {{/each}}
+                    </ul>
+                </fieldset>
+            </div>
+            <div class="mwf-fab">
+                <input type="submit" value="Speichern" form="notesEditForm" class="mwf-imgbutton mwf-img-disk"/>
+            </div>
+        </div>
+        <footer>
+            <button class="mwf-back mwf-imgbutton mwf-img-backward mwf-left-align  mwf-right-fill">
+            </button>
+            <button class="mwf-right-align mwf-back mwf-imgbutton mwf-img-paste" on-click="pasteDefaultContent">
+            </button>
+        </footer>
+    </div>
+</div>
+
+
+<div class="mwf-view" data-mwf-viewcontroller="NotesReadviewViewController" id="notesReadview">
+    <div class="mwf-template mwf-databind" data-mwf-templatename="notesReadviewTemplate">
+        <header>
+            <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+            </button>
+            <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{item.name}}</h2>
+            <button class="mwf-right-align mwf-imgbutton mwf-img-pencil" on-click="editNote"></button>
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteNote"></button>
+        </header>
+        <div class="mwf-body">
+            <div class="mwf-scrollview">
+                <p>
+                    {{item.content}}
+                </p>
+            </div>
+            <div class="mwf-bottom-align">
+                <fieldset class="cta-tagpane cta-readonly">
+                    <ul>
+                        {{#each item.tags}}
+                        <!-- note that the iterator "tag" will not be used as prefix inside of the iteration (vs., e.g., JSF)!!! -->
+                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}</li>
+                        {{/each}}
+                    </ul>
+                </fieldset>
+            </div>
+        </div>
+        <footer>
+            <button class="mwf-back mwf-imgbutton mwf-img-backward">
+            </button>
+        </footer>
+    </div>
+</div>
+
+<!-------------
+    PLaces
+  ------------->
+
+<div class="mwf-view" id="placesOverview" data-mwf-viewcontroller="PlacesOverviewViewController">
+    <header>
+        <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+        </button>
+        <h2 class="mwf-left-align  mwf-right-fill">Orte</h2>
+        <button id="newPlaceAction" class="mwf-right-align mwf-imgbutton mwf-img-plus">
+        </button>
+    </header>
+    <div class="mwf-body">
+        <ul class="mwf-listview mwf-scrollview" data-mwf-listitem-view="listitem-places-overview" data-mwf-listitem-menu="placesItemMenu">
+            <li class="mwf-listitem mwf-li-singletitle mwf-template mwf-databind" data-mwf-targetview="placesEditview" data-mwf-templatename="listitem-places-overview">
+                <div class="mwf-left-align mwf-li-titleblock mwf-dyncontent  mwf-right-fill"><h2>{{name}}</h2>
+                </div>
+                <div class="mwf-right-align mwf-imgbutton mwf-img-options-vertical mwf-listitem-menu-control"></div>
+            </li>
+        </ul>
+    </div>
+    <footer>
+        <button class="mwf-left-align mwf-imgbutton cta-toggle-crudscope  mwf-right-fill">
+        </button>
+        <button class="mwf-right-align mwf-imgbutton mwf-img-refresh cta-toggleGlobalLayoutAction">
+        </button>
+    </footer>
+    <div data-mwf-templatename="placesItemMenu" class="mwf-databind mwf-template mwf-listitem-menu mwf-dialog mwf-popup">
+        <header>
+            <h2 class="mwf-dyncontent">{{name}}</h2>
+        </header>
+        <div class="mwf-dialog-body">
+            <ul>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="deletePlace">Löschen</li>
+                <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="editPlace">Editieren</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="mwf-view" data-mwf-viewcontroller="PlacesEditviewViewController" id="placesEditview">
+    <!-- the following div is a mere template wrapper that will be removed when creating the view -->
+    <div class="mwf-template mwf-databind" data-mwf-templatename="placesEditviewTemplate">
+        <header>
+            <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+            </button>
+            <h2 class="mwf-dyncontent mwf-left-align  mwf-right-fill">{{#if item.created}}{{#if mode == 'edit'}}Editieren: {{/if}}{{item.name}}{{else}}Neuer Ort{{/if}}</h2>
+            {{#if mode == 'edit'}}<input type="submit" value="Speichern" form="placesEditForm" class="mwf-right-align mwf-imgbutton mwf-img-disk"/>{{/if}}
+            {{#unless mode == 'edit'}}<button class="mwf-imgbutton mwf-img-pencil mwf-right-align" data-mwf-id="editPlaceAction" on-click="setEditMode"></button>{{/unless}}
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" data-mwf-id="deletePlaceAction"></button>
+            {{#if mode == 'edit'}}<button class="mwf-imgbutton mwf-img-hash mwf-right-align" on-click="addTag"></button>{{/if}}
+        </header>
+        <div class="mwf-body">
+            <!-- the map must not be placed inside of the form! -->
+            <div class="mwf-mapcontainer"></div>
+            <form id="placesEditForm" on-submit="submitPlaceForm">
+                <fieldset class="mwf-material">
+                    <legend>
+                        Name
+                    </legend>
+                    <input value="{{item.name}}" type="text" name="name" placeholder="..."
+                           required="required" autocomplete="off" disabled="{{#unless mode == 'edit'}}disabled{{/unless}}"/>
+                </fieldset>
+                <p></p>
+            </form>
+            <div class="mwf-bottom-align">
+                <fieldset class="cta-tagpane">
+                    <ul>
+                        {{#each item.tags}}
+                        <!-- note that the iterator "tag" will not be used as prefix inside of the iteration (vs., e.g., JSF)!!! -->
+                        <li on-click="selectTag" data-mwf-id="{{_id}}">{{name}}{{#if mode == 'edit'}}<span data-mwf-id="{{_id}}" class="mwf-img-remove mwf-imgbutton mwf-right-align-float" on-click="removeTag"></span>{{/if}}</li>
+                        {{/each}}
+                    </ul>
+                </fieldset>
+            </div>
+        </div>
+        <footer>
+            <button class="mwf-back mwf-imgbutton mwf-img-backward mwf-left-align">
+            </button>
+        </footer>
+    </div>
+    <div class="mwf-template" data-mwf-templatename="placesEditviewMarkerPopup">
+        <a class="mwf-map-popup-content">Auswählen?</a>
+    </div>
+</div>
+
+<!-------------
+    map view
+  ------------->
+<div class="mwf-view" id="mapview" data-mwf-viewcontroller="MapViewController">
+    <header>
+        <button class="mwf-img-sandwich-action mwf-left-align mwf-imgbutton mwf-img-sandwich">
+        </button>
+        <h2 class="mwf-left-align">Karte</h2>
+    </header>
+    <div class="mwf-body">
+        <!-- here the map will be injected -->
+    </div>
+    <footer>
+        <!--   <button class="mwf-back mwf-imgbutton mwf-img-backward">
+           </button>-->
+    </footer>
+    <div class="mwf-template" data-mwf-templatename="placesOverviewMarkerPopup">
+        <a class="mwf-map-popup-content">lorem ipsum</a>
+    </div>
+</div>
+</div>
+
+<!-------------
+    dialogs
+  ------------->
+<div class="mwf-dialog mwf-popup mwf-view-component" id="selectTagDialog" data-mwf-viewcontroller="TagSelectionDialogViewController">
+    <!-- the normal input/select dialogs do not use a header, but put a h2 inside of the body -->
+    <div class="mwf-dialog-body">
+        <h2>Tag auswählen</h2>
+        <form name="tagnameInputForm">
+            <input class="mwf-autofocus" type="text" name="tagnameInput" list="tagnamesDatalist" autocomplete="on"/>
+            <div class="mwf-buttonbar">
+                <input class="mwf-button" type="submit" value="Übernehmen"/>
+            </div>
+            <datalist id="tagnamesDatalist">
+                <option class="mwf-template" data-mwf-templatename="tagnameOption" value="tagname"></option>
+            </datalist>
+        </form>
+    </div>
+</div>
+
+<!-- a confirm dialog realised using the generic dialog view controller -->
+<div class="mwf-dialog mwf-popup mwf-view-component mwf-template mwf-databind" data-mwf-viewcontroller="GenericDialogTemplateViewController" data-mwf-templatename="confirmNewTagDialog">
+    <div class="mwf-dialog-body">
+        <h2>Neuer Tag</h2>
+        <p>
+            Soll der Tag {{tag.name}} neu erstellt werden?
+        </p>
+        <div class="mwf-buttonbar">
+            <!-- type=button must be set in order to prevent that button click fires submit on the form -->
+            <button class="mwf-left-align mwf-button" on-click="cancelNewTag" type="button">Nein</button>
+            <button class="mwf-button-prio mwf-right-align mwf-button" on-click="createNewTag">Ja</button>
+        </div>
+    </div>
+</div>
+
+<!-- a confirm dialog realised using the generic dialog view controller -->
+<div class="mwf-dialog mwf-popup mwf-view-component mwf-template mwf-databind" data-mwf-viewcontroller="GenericDialogTemplateViewController" data-mwf-templatename="removeTagDialog">
+    <div class="mwf-dialog-body">
+        <h2>Tag entfernen</h2>
+        <p>
+            Soll der Tag {{tag.name}} entfernt werden?
+        </p>
+        <div class="mwf-buttonbar">
+            <!-- type=button must be set in order to prevent that button click fires submit on the form -->
+            <button class="mwf-left-align mwf-button" on-click="cancelAction" type="button">Nein</button>
+            <button class="mwf-button-prio mwf-right-align mwf-button" on-click="okAction">Ja</button>
+        </div>
+    </div>
+</div>
+
+
+<!-------------
+    other elements
+  ------------->
+
+<!-- a toast -->
+<div class="mwf-toast">
+    lorem ipsum
+</div>
+
+<!-- a map -->
+<!--this is the openlayers map view-->
+<div id="mwf-mapwrapper">
+    <div id="map" class="map"></div>
+</div>
+
+<!-------------
+    sidemenu
+  ------------->
+
+<!-- mwf-view-components and their view controllers will be instantiated when the application is started, they will not be managed by the navigation stack but will stay alive over the whole lifetime of their parent. Parent is not handled for the time being, so far they will be alive over the whole lifetime of the application - let's see whether they might be useful as embedded VCs in other VCs -->
+<div id="sidemenu" class="mwf-sidemenu mwf-view-component mwf-attaching mwf-initialise-onload" data-mwf-viewcontroller="SidemenuViewController">
+    <ul>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-tags" data-mwf-targetview="tagsOverview">
+            <div class="mwf-icon mwf-img-hash mwf-left-align"></div>
+            <h2 class="mwf-left-align mwf-li-titleblock">Tags</h2>
+        </li>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetview="notesOverview">
+            <span class="mwf-icon mwf-img-notes mwf-left-align"></span>
+
+            <h2 class="mwf-left-align mwf-li-titleblock">Notizen</h2>
+        </li>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-media">
+            <span class="mwf-icon mwf-img-photo-album mwf-left-align"></span>
+
+            <h2 class="mwf-left-align mwf-li-titleblock">Medien</h2>
+        </li>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-links">
+            <span class="mwf-icon mwf-img-link mwf-left-align"></span>
+
+            <h2 class="mwf-left-align mwf-li-titleblock">Links</h2>
+        </li>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-places" data-mwf-targetview="placesOverview">
+            <span class="mwf-icon mwf-img-map-marker mwf-left-align"></span>
+
+            <h2 class="mwf-left-align mwf-li-titleblock">Orte</h2>
+        </li>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-map" data-mwf-targetview="mapview">
+            <span class="mwf-icon mwf-img-map mwf-left-align"></span>
+
+            <h2 class="mwf-left-align mwf-li-titleblock">Karte</h2>
+        </li>
+        <li class="mwf-li-singletitle mwf-menu-item" data-mwf-id="mainmenu-reset">
+            <span class="mwf-icon mwf-img-destroy mwf-left-align"></span>
+
+            <h2 class="mwf-left-align mwf-li-titleblock">Zurücksetzen...</h2>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

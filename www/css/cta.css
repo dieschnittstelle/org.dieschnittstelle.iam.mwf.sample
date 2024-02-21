@@ -1,0 +1,105 @@
+
+.mwf-body {
+    /* elements inside of mwf-body may be positioned relatively to the body dimensions */
+    position: relative;
+}
+
+/************************
+ *      TAGS
+ ************************/
+
+.cta-tagpane {
+    margin: 10px;
+    overflow: scroll;
+    width: calc(100% - 50px);
+}
+
+.cta-tagpane.cta-readonly {
+    padding-left: 0px;
+    border: none;
+}
+
+.cta-tagpane li {
+    background-color: limegreen;
+    display: inline-block;
+    padding-left: 15px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 5px;
+    height: 25px;
+    line-height: 21px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+/* only in readonly mode we do bottom alignment */
+.cta-tagpane.cta-readonly li {
+    padding-right: 15px;
+}
+
+.cta-tagpane li .mwf-imgbutton {
+    margin-left: 10px;
+    height: 21px;
+    width: 20px;
+    background-size: 15px;
+}
+
+#taggableOverview .mwf-li-singletitle.cta-itemcategory .mwf-li-titleblock {
+    padding-top: 8px;
+}
+
+#taggableOverview .mwf-li-singletitle.cta-itemcategory h2.mwf-li-titleblock {
+    text-transform: uppercase;
+    color: rgb(120,120,120)
+}
+
+/************************
+ *      PLACES
+ ************************/
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#mwf-mapwrapper {
+    height:100%;
+    width: 100%
+}
+
+#placesEditview .mwf-mapcontainer {
+    height: 60%;
+    width: calc(100% - 24px);
+    padding: 12px;
+}
+
+/* the view/edit form for places */
+#placesEditview input[disabled] {
+    opacity: 1.0;
+    border-bottom-color: transparent;
+}
+
+#placesEditview .cta-tagpane li {
+    padding-right: 15px;
+}
+
+
+/*
+ * local vs. remote
+ */
+.mwf-imgbutton.cta-toggle-crudscope {
+    background: url("../lib/css/img/png/login_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mwf-imgbutton.cta-toggle-crudscope.cta-crudscope-remote {
+    background: url("../lib/css/img/png/logout_FILL0_wght400_GRAD0_opsz24.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+input[type=radio] {
+    border:none;width:auto;height:auto;padding-top:5px}

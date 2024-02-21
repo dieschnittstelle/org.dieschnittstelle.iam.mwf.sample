@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Node" type="NodeJSConfigurationType" path-to-node="/usr/local/bin/node" path-to-js-file="webserver.js" working-dir="$PROJECT_DIR$">
+    <method v="2" />
+  </configuration>
+</component>

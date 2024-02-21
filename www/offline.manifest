@@ -1,0 +1,131 @@
+CACHE MANIFEST
+
+# v0.0.21 - 2024-02-21-1
+# This is a comment.
+
+# ATTENTION: IF THIS FILE REFERENCES ANY UNAVAILABLE RESSOURCES, NO CACHE WILL BE CREATED!!!
+
+##############
+# framework
+##############
+CACHE:
+
+# framework: css resources
+lib/css/mwf.css
+lib/css/mwfIcons.css
+lib/css/normalize.css
+
+# framework: icons used by the mwf style (and some more)
+lib/css/img/png/add_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/arrow_left_alt_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/arrow_right_alt_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/close_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/content_paste_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/content_paste_go_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/delete_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/done_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/edit_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/grid_view_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/link_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/list_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/local_laundry_service_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/location_on_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/login_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/logout_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/map_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/menu_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/mic_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/mic_off_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/more_vert_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/photo_album_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/photo_camera_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/play_arrow_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/play_circle_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/save_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/settings_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/sync_FILL0_wght400_GRAD0_opsz24.png
+lib/css/img/png/tag_FILL0_wght400_GRAD0_opsz24.png
+
+# themes
+lib/css/theme/mwf-default-theme.css
+lib/css/theme/mwf-with-theme.css
+
+# framework main
+lib/js/framework-modules.js
+
+# framework: external js libs
+lib/js/external/ractive.min.js
+lib/js/external/require.js
+
+# framework: js libs
+lib/js/mwf/mwf.js
+lib/js/mwf/mwfEventhandling.js
+lib/js/mwf/mwfUtils.js
+
+lib/js/mwf/controller/mwfGenericDialogTemplateViewController.js
+lib/js/mwf/controller/mwfMapHolderLeaflet.js
+
+lib/js/mwf/crud/mwfEntityManager.js
+lib/js/mwf/crud/mwfGenericCRUDImplLocal.js
+lib/js/mwf/crud/mwfGenericCRUDImplRemote.js
+lib/js/mwf/crud/mwfIndexeddb.js
+lib/js/mwf/crud/mwfXhr.js
+
+
+#######################
+# application skeleton
+#######################
+CACHE:
+
+# js resources
+js/Main.js
+
+# app.html
+app.html
+
+pwa/webapp-manifest.json
+
+##################################
+# application specfific resources
+##################################
+CACHE:
+css/cta.css
+css/theme/myapp-theme.css
+
+# application
+js/ContentTaggerApplication.js
+# entities
+js/model/Entities.js
+# map view
+js/controller/MapViewController.js
+# notes
+js/controller/NotesEditviewViewController.js
+js/controller/NotesOverviewViewController.js
+js/controller/NotesReadviewViewController.js
+# places
+js/controller/PlacesEditviewViewController.js
+js/controller/PlacesOverviewViewController.js
+# sidemenu
+js/controller/SidemenuViewController.js
+# tags
+js/controller/TaggableOverviewViewController.js
+js/controller/TagSelectionDialogViewController.js
+js/controller/TagsOverviewViewController.js
+
+# this is for testing error handling
+#js/direm.js
+
+########################
+# network resources
+########################
+
+NETWORK:
+api
+content
+available
+http://lorempixel.com
+http://cdn.leafletjs.com
+http://a.tile.osm.org
+http://b.tile.osm.org
+http://c.tile.osm.org
+http://d.tile.osm.org
