@@ -1,7 +1,6 @@
 {
   "short_name": "MY MWF APP",
-  "name": "MY MWF Application Skeleton",
-  /* icons generated using https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html */
+  "name": "MY MWF Sample Application",
   "icons": [
     {
       "src": "mipmap-xhdpi/launcher-icon.png",
